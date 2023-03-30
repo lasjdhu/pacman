@@ -141,7 +141,7 @@ void Game::init_map() {
     this->map = new Map();
 }
 
-int Game::parse_map(const QString &content) {
+int Game::parse_map(QString &content) {
     std::stringstream ss(content.toStdString());
     ss >> this->map_size.width >> this->map_size.height;
 

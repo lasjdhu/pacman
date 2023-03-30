@@ -6,7 +6,6 @@
 #include <vector>
 #include <sstream>
 #include <QString>
-#include <QtCore/QStringList>
 #include <QTextBrowser>
 
 struct Position {
@@ -139,7 +138,7 @@ public:
 
     void init_map();
 
-    int parse_map(const QString& content);
+    int parse_map(QString &content);
 
     void free_objects();
 

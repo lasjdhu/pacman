@@ -20,9 +20,10 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    void initGame(const QString& content);
+    void initGame(QString &content);
 
 private slots:
     void loadFile();
+    void displayHelp();
 };
 #endif // MAINWINDOW_H

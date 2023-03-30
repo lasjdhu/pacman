@@ -15,38 +15,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Load file
     connect(ui->actionLoad, &QAction::triggered, this, &MainWindow::loadFile);
+    connect(ui->actionUsage, &QAction::triggered, this, &MainWindow::displayHelp);
 }
 
-MainWindow::~MainWindow() {
-    delete ui;
-}
-
-void MainWindow::loadFile() {
-    // Get filename
-    QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Text Files (*.txt)"));
-    if (filename.isEmpty()) {
-        statusBar()->showMessage("No file loaded");
-        return;
-    }
-
-    // Open file
-    QFile file(filename);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        statusBar()->showMessage("Failed to load file");
-        return;
-    }
-
-    // Read content, get strings and convert them to a byte array
-    QTextStream in(&file);
-    QString content = in.readAll();
-
-    file.close();
-    statusBar()->showMessage(tr("File \"%1\" loaded").arg(filename));
-
-    initGame(content);
-}
-
-void MainWindow::initGame(const QString& content) {
+void MainWindow::initGame(QString& content) {
     Game game;
     game.init_map();
 
@@ -77,4 +49,38 @@ void MainWindow::initGame(const QString& content) {
     // cleanup memory
     game.map->free_map_objects();
     game.free_objects();
+}
+
+void MainWindow::loadFile() {
+    // Get filename
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Text Files (*.txt)"));
+    if (filename.isEmpty()) {
+        statusBar()->showMessage("No file loaded");
+        return;
+    }
+
+    // Open file
+    QFile file(filename);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        statusBar()->showMessage("Failed to load file");
+        return;
+    }
+
+    // Read content, get strings and convert them to a byte array
+    QTextStream in(&file);
+    QString content = in.readAll();
+
+    file.close();
+    statusBar()->showMessage(tr("File \"%1\" loaded").arg(filename));
+
+    initGame(content);
+}
+
+void MainWindow::displayHelp() {
+    QString message = "Help is here";
+    QMessageBox::information(this, tr("Help"), message);
+}
+
+MainWindow::~MainWindow() {
+    delete ui;
 }
