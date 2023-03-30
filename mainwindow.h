@@ -2,6 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QLabel>
+#include <QFileDialog>
+#include <QtWidgets>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,5 +20,9 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    void initGame(const QString& content);
+
+private slots:
+    void loadFile();
 };
 #endif // MAINWINDOW_H

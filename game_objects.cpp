@@ -104,12 +104,12 @@ MapObject Map::char2mapObject(char c) {
     }
 }
 
-void Map::print_map() {
+void Map::print_map(QTextBrowser &text) {
     for (int i = 0; i < this->map_layout.size(); i++) {
         for (int j = 0; j < this->map_layout[i].size(); j++) {
-            std::cout << this->map_layout[i][j];
+            text.insertPlainText(QString::number(this->map_layout[i][j]));
         }
-        std::cout << std::endl;
+        text.insertPlainText("\n");
     }
 }
 
@@ -141,22 +141,21 @@ void Game::init_map() {
     this->map = new Map();
 }
 
-int Game::parse_map() {
-    std::string line;
-    std::getline(std::cin, line);
-    std::stringstream ss(line);
+int Game::parse_map(const QString &content) {
+    std::stringstream ss(content.toStdString());
     ss >> this->map_size.width >> this->map_size.height;
 
     std::string map_layout;
     int num_startpos = 0; int num_targetpos = 0; int num_keys = 0;
+    this->num_ghosts = 0;
 
     char c;
-    for(int i = 0, j = 0; (c = std::getchar()) != EOF; i++) {
-        if (c == ' ' || c == '\n') {
-            ++j;
-            continue;
+    int i = -1; // We don't count first line with width and height declaration
+    int j = 0;
+    while (ss.get(c)) {
+        if (c != ' ' && c != '\n') {
+            map_layout.push_back(c);
         }
-        map_layout.push_back(c);
 
         switch (c) {
         case 'G':
@@ -165,18 +164,24 @@ int Game::parse_map() {
         case 'K':
             num_keys++;
             this->has_key = true;
-            this->map->key = new Key({j, i % this->map_size.width});
+            this->map->key = new Key({i, j});
             break;
         case 'S':
             num_startpos++;
-            this->map->start_pos = new StartPos({j, i % this->map_size.width});
+            this->map->start_pos = new StartPos({i, j});
             break;
         case 'T':
             num_targetpos++;
-            this->map->target_pos = new TargetPos({j, i % this->map_size.width});
+            this->map->target_pos = new TargetPos({i, j});
             break;
         default:
             break;
+        }
+
+        j++;
+        if (c == '\n') {
+            i++;
+            j = 0;
         }
     }
 
@@ -188,7 +193,7 @@ int Game::parse_map() {
 
     if (num_keys > 1) return -3;
 
-    // load map 
+    // load map
     this->map->load_map(this->map_size.width, this->map_size.height, map_layout);
 
     return 0;

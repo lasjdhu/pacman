@@ -5,6 +5,9 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <QString>
+#include <QtCore/QStringList>
+#include <QTextBrowser>
 
 struct Position {
     int x;
@@ -106,7 +109,7 @@ public:
     // converts char to MapObject
     MapObject char2mapObject(char c);
     // for debugging
-    void print_map();
+    void print_map(QTextBrowser &text);
     // frees memory of static objects
     void free_map_objects();
 };
@@ -136,7 +139,7 @@ public:
 
     void init_map();
 
-    int parse_map();
+    int parse_map(const QString& content);
 
     void free_objects();
 
