@@ -98,8 +98,38 @@ void MainWindow::saveFile() {
         return;
     }
 
-    // Get current state based on a content in textBrowser
-    QString gameState = ui->textBrowser->toPlainText();
+    QString content = ui->textBrowser->toPlainText();
+
+    QStringList rows = content.split("\n");
+
+    while (!rows.isEmpty() && rows.last().isEmpty()) {
+        rows.removeLast();
+    }
+
+    int numRows = rows.size();
+    int numCols = numRows > 0 ? rows[0].size() : 0;
+
+    for (int i = 0; i < numRows; i++) {
+        for (int j = 0; j < numCols; j++) {
+            QChar c = rows[i][j];
+            if (c == '0') {
+                rows[i][j] = '.';
+            } else if (c == '1') {
+                rows[i][j] = 'X';
+            } else if (c == '2') {
+                rows[i][j] = 'K';
+            } else if (c == '3') {
+                rows[i][j] = 'S';
+            } else if (c == '4') {
+                rows[i][j] = 'T';
+            } else if (c == '5') {
+                rows[i][j] = 'G';
+            }
+        }
+    }
+
+    QString sizes = QString("%1 %2").arg(numRows).arg(numCols);
+    QString gameState = sizes + "\n" + rows.join("\n") + "\n";
 
     // Write gameState to a file
     QTextStream out(&file);
