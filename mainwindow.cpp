@@ -11,10 +11,16 @@ MainWindow::MainWindow(QWidget *parent)
     // Add label
     QLabel* scoreLabel = new QLabel("");
     statusBar()->addPermanentWidget(scoreLabel);
-    statusBar()->showMessage("No file loaded");
+
+    // Call function that loads map when user runs application
+    // (after ui is shown so delay is needed)
+    QTimer::singleShot(0, this, &MainWindow::loadFile);
+    statusBar()->showMessage("Please select your map");
 
     // Load file
     connect(ui->actionLoad, &QAction::triggered, this, &MainWindow::loadFile);
+
+    // Show help
     connect(ui->actionUsage, &QAction::triggered, this, &MainWindow::displayHelp);
 }
 
@@ -53,7 +59,7 @@ void MainWindow::initGame(QString& content) {
 
 void MainWindow::loadFile() {
     // Get filename
-    QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Text Files (*.txt)"));
+    QString filename = QFileDialog::getOpenFileName(this, "Open File", "", "Text Files (*.txt)");
     if (filename.isEmpty()) {
         statusBar()->showMessage("No file loaded");
         return;
@@ -71,14 +77,15 @@ void MainWindow::loadFile() {
     QString content = in.readAll();
 
     file.close();
-    statusBar()->showMessage(tr("File \"%1\" loaded").arg(filename));
+    statusBar()->showMessage(QString("File \"%1\" loaded").arg(filename));
 
     initGame(content);
 }
 
 void MainWindow::displayHelp() {
     QString message = "Help is here";
-    QMessageBox::information(this, tr("Help"), message);
+    QMessageBox::information(this, "Help", message);
+    statusBar()->showMessage("Help is shown");
 }
 
 MainWindow::~MainWindow() {

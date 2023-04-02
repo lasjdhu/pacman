@@ -47,9 +47,9 @@ margin: 10px;</string>
     <property name="title">
      <string>Game</string>
     </property>
-    <addaction name="actionNew"/>
     <addaction name="actionLoad"/>
     <addaction name="actionSave"/>
+    <addaction name="actionReplay"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -93,6 +93,11 @@ margin: 10px;</string>
   <action name="actionUsage">
    <property name="text">
     <string>Usage</string>
+   </property>
+  </action>
+  <action name="actionReplay">
+   <property name="text">
+    <string>Replay</string>
    </property>
   </action>
  </widget>
