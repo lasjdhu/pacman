@@ -19,7 +19,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Load file
     connect(ui->actionLoad, &QAction::triggered, this, &MainWindow::loadFile);
-
+    // Save file
+    connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveFile);
     // Show help
     connect(ui->actionUsage, &QAction::triggered, this, &MainWindow::displayHelp);
 }
@@ -80,6 +81,32 @@ void MainWindow::loadFile() {
     statusBar()->showMessage(QString("File \"%1\" loaded").arg(filename));
 
     initGame(content);
+}
+
+void MainWindow::saveFile() {
+    // Get filename
+    QString filename = QFileDialog::getSaveFileName(this, "Save File", "", "Text Files (*.txt)");
+    if (filename.isEmpty()) {
+        statusBar()->showMessage("No file saved");
+        return;
+    }
+
+    // Open file
+    QFile file(filename);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        statusBar()->showMessage("Failed to save file");
+        return;
+    }
+
+    // Get current state based on a content in textBrowser
+    QString gameState = ui->textBrowser->toPlainText();
+
+    // Write gameState to a file
+    QTextStream out(&file);
+    out << gameState;
+
+    file.close();
+    statusBar()->showMessage(QString("File \"%1\" saved").arg(filename));
 }
 
 void MainWindow::displayHelp() {

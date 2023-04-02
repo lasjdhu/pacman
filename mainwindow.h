@@ -24,6 +24,7 @@ private:
 
 private slots:
     void loadFile();
+    void saveFile();
     void displayHelp();
 };
 #endif // MAINWINDOW_H

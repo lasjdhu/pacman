@@ -107,7 +107,7 @@ public:
     void load_map(int width, int height, std::string map);
     // converts char to MapObject
     MapObject char2mapObject(char c);
-    // for debugging
+    // print map on a screen
     void print_map(QTextBrowser &text);
     // frees memory of static objects
     void free_map_objects();
