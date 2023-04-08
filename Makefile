@@ -137,14 +137,14 @@ all: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/dmitrii/Documents/icp_project/CMakeFiles 0
 .PHONY : all
 
-# The main clean target
-clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 clean
-.PHONY : clean
+# # The main clean target
+# clean:
+# 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 clean
+# .PHONY : clean
 
-# The main clean target
-clean/fast: clean
-.PHONY : clean/fast
+# # The main clean target
+# clean/fast: clean
+# .PHONY : clean/fast
 
 # Prepare targets for installation.
 preinstall: all
@@ -431,3 +431,12 @@ cmake_check_build_system:
 	$(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 
+#=============================================================================
+# Our custom calls
+clean:
+	rm -rf cmake_install.cmake CMakeCache.txt CMakeFiles icp_project_autogen icp_project
+	@echo "All clean"
+pack:
+	@echo "Making archive..."
+	zip -r xname01-xivanu00.zip *
+	@echo "Ready"
