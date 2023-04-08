@@ -440,3 +440,6 @@ pack:
 	@echo "Making archive..."
 	zip -r xname01-xivanu00.zip *
 	@echo "Ready"
+doxygen:
+	mkdir doc
+	@echo "Documentation is generated in docs/"
