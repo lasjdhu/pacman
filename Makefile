@@ -442,4 +442,4 @@ pack:
 	@echo "Ready"
 doxygen:
 	mkdir doc
-	@echo "Documentation is generated in docs/"
+	@echo "Documentation is generated in doc/"
