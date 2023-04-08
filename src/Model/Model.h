@@ -1,5 +1,5 @@
-#ifndef GAME_OBJECTS_H
-#define GAME_OBJECTS_H
+#ifndef MODEL_H
+#define MODEL_H
 
 #include <iostream>
 #include <string>
@@ -156,4 +156,5 @@ public:
 
     void Draw();
 };
-#endif // GAME_OBJECTS_H
+
+#endif // MODEL_H
