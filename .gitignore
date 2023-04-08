@@ -23,7 +23,6 @@ tags
 .DS_Store
 .directory
 *.debug
-Makefile*
 *.prl
 *.app
 moc_*.cpp
@@ -38,6 +37,7 @@ Thumbs.db
 # qtcreator generated files
 *.pro.user*
 CMakeLists.txt.user*
+.qt/
 
 # xemacs temporary files
 *.flc
@@ -75,4 +75,10 @@ CMakeLists.txt.user*
 # Build directory
 build-src-Desktop-Debug/
 build*/
+
+# After-make files and dirs
+CMakeCache.txt
+cmake_install.cmake
+icp_project_autogen/
+
 
