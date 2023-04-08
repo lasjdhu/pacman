@@ -1,8 +1,0 @@
-/home/dmitrii/Documents/icp_project/CMakeFiles/icp_project.dir
-/home/dmitrii/Documents/icp_project/CMakeFiles/edit_cache.dir
-/home/dmitrii/Documents/icp_project/CMakeFiles/rebuild_cache.dir
-/home/dmitrii/Documents/icp_project/CMakeFiles/list_install_components.dir
-/home/dmitrii/Documents/icp_project/CMakeFiles/install.dir
-/home/dmitrii/Documents/icp_project/CMakeFiles/install/local.dir
-/home/dmitrii/Documents/icp_project/CMakeFiles/install/strip.dir
-/home/dmitrii/Documents/icp_project/CMakeFiles/icp_project_autogen.dir
