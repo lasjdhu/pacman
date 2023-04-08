@@ -37,7 +37,7 @@ Thumbs.db
 # qtcreator generated files
 *.pro.user*
 CMakeLists.txt.user*
-.qt/
+*.qt/
 
 # xemacs temporary files
 *.flc
@@ -80,5 +80,5 @@ build*/
 CMakeCache.txt
 cmake_install.cmake
 icp_project_autogen/
-
+CMakeFiles/
 
