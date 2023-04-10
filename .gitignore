@@ -82,3 +82,5 @@ cmake_install.cmake
 icp_project_autogen/
 CMakeFiles/
 doc/
+icp_project
+

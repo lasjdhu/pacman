@@ -137,14 +137,14 @@ all: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/dmitrii/Documents/icp_project/CMakeFiles 0
 .PHONY : all
 
-# # The main clean target
-# clean:
-# 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 clean
-# .PHONY : clean
+# The main clean target
+clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 clean
+.PHONY : clean
 
-# # The main clean target
-# clean/fast: clean
-# .PHONY : clean/fast
+# The main clean target
+clean/fast: clean
+.PHONY : clean/fast
 
 # Prepare targets for installation.
 preinstall: all
@@ -173,6 +173,32 @@ icp_project: cmake_check_build_system
 icp_project/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/icp_project.dir/build.make CMakeFiles/icp_project.dir/build
 .PHONY : icp_project/fast
+
+#=============================================================================
+# Target rules for targets named pack
+
+# Build rule for target.
+pack: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 pack
+.PHONY : pack
+
+# fast build rule for target.
+pack/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pack.dir/build.make CMakeFiles/pack.dir/build
+.PHONY : pack/fast
+
+#=============================================================================
+# Target rules for targets named doxygen
+
+# Build rule for target.
+doxygen: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 doxygen
+.PHONY : doxygen
+
+# fast build rule for target.
+doxygen/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/doxygen.dir/build.make CMakeFiles/doxygen.dir/build
+.PHONY : doxygen/fast
 
 #=============================================================================
 # Target rules for targets named icp_project_autogen
@@ -391,7 +417,9 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
+	@echo "... doxygen"
 	@echo "... icp_project_autogen"
+	@echo "... pack"
 	@echo "... icp_project"
 	@echo "... Controller/GameController.o"
 	@echo "... Controller/GameController.i"
@@ -431,15 +459,3 @@ cmake_check_build_system:
 	$(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 
-#=============================================================================
-# Our custom calls
-clean:
-	rm -rf cmake_install.cmake CMakeCache.txt CMakeFiles icp_project_autogen icp_project
-	@echo "All clean"
-pack:
-	@echo "Making archive..."
-	zip -r xname01-xivanu00.zip *
-	@echo "Ready"
-doxygen:
-	mkdir doc
-	@echo "Documentation is generated in doc/"
