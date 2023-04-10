@@ -59,6 +59,28 @@ set_target_properties(icp_project PROPERTIES
     WIN32_EXECUTABLE TRUE
 )
 
+set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
+    "doc/"
+    "cmake_install.cmake"
+    "CMakeCache.txt"
+    "CMakeFiles"
+    "icp_project_autogen"
+    "icp_project"
+    "build-src-Desktop-Debug"
+    "src/CMakeLists.txt.user"
+    "xname01-xivanu00.zip"
+)
+
+add_custom_target(pack
+  COMMAND zip -r xname01-xivanu00.zip *
+  COMMENT "Making archive..."
+)
+
+add_custom_target(doxygen
+  COMMAND mkdir -p doc && doxygen
+  COMMENT "Documentation is generated in doc/"
+)
+
 install(TARGETS icp_project
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
