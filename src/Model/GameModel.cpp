@@ -7,14 +7,14 @@ Game::Game() {
     std::cout << "[+] Game object created" << std::endl;
 }
 
-void Game::init_pacman(int speed, int health) {
-    this->pacman = new Pacman(speed, health);
+void Game::init_pacman(int health) {
+    this->pacman = new Pacman(health);
 }
 
-void Game::init_ghosts(int speed) {
+void Game::init_ghosts() {
     this->ghosts = new Ghost*[this->num_ghosts];
     for (int i = 0; i < this->num_ghosts; i++) {
-        this->ghosts[i] = new Ghost(speed);
+        this->ghosts[i] = new Ghost();
     }
 }
 
@@ -44,16 +44,16 @@ int Game::parse_map(QString &content) {
             break;
         case 'K':
             num_keys++;
-            this->has_key = true;
-            this->map->key = new Key({i, j});
+            this->contains_key = true;
+            this->map->key = new Key({j, i});
             break;
         case 'S':
             num_startpos++;
-            this->map->start_pos = new StartPos({i, j});
+            this->map->start_pos = new StartPos({j, i});
             break;
         case 'T':
             num_targetpos++;
-            this->map->target_pos = new TargetPos({i, j});
+            this->map->target_pos = new TargetPos({j, i});
             break;
         default:
             break;
@@ -74,10 +74,91 @@ int Game::parse_map(QString &content) {
 
     if (num_keys > 1) return -3;
 
+
     // load map
     this->map->load_map(this->map_size.width, this->map_size.height, map_layout);
 
     return 0;
+}
+
+void Game::check_collision() {
+    // Calculate next position
+    Position next_position;
+
+    switch (this->pacman->get_direction()) {
+    case Direction::UP:
+        //std::cout << "UP" << std::endl;
+        next_position = {this->pacman->get_position_x(), this->pacman->get_position_y()-1};
+        break;
+    case Direction::DOWN:
+        //std::cout << "DOWN" << std::endl;
+        next_position = {this->pacman->get_position_x(), this->pacman->get_position_y()+1};
+        break;
+    case Direction::LEFT:
+        //std::cout << "LEFT" << std::endl;
+        next_position = {this->pacman->get_position_x()-1, this->pacman->get_position_y()};
+        break;
+    case Direction::RIGHT:
+        //std::cout << "RIGHT" << std::endl;
+        next_position = {this->pacman->get_position_x()+1, this->pacman->get_position_y()};
+        break;
+    default:
+        std::cerr << "[-] Invalid direction" << std::endl;
+        exit(1);
+    }
+
+    // Check if next position is out of bounds
+    if (next_position.x < 0 || next_position.x >= this->map_size.width) {
+        return;
+    }
+    if (next_position.y < 0 || next_position.y >= this->map_size.height) {
+        return;
+    }
+
+    // Check if next position is a wall
+    if (this->map->get_layout()[next_position.y][next_position.x] == WALL) {
+        return;
+    }
+
+    // Check if next position is a ghost
+    for (int i = 0; i < this->num_ghosts; i++) {
+        if (this->ghosts[i]->get_position_x() == next_position.x
+            && this->ghosts[i]->get_position_y() == next_position.y) {
+            return;
+            // TODO: Game over
+        }
+    }
+
+    // Check if next position is a key
+    if (this->contains_key) {
+        if (this->map->key->get_position_x() == next_position.x
+            && this->map->key->get_position_y() == next_position.y) {
+            this->key_collected = true;
+            // TODO: remove key from map
+        }
+    }
+
+    // Target collision
+    bool target_reached = false;
+
+    if (this->pacman->get_position_x() == this->map->target_pos->get_position_x()
+         && this->pacman->get_position_y() == this->map->target_pos->get_position_y()) {
+        target_reached = true;
+    }
+    if (this->contains_key) {
+        if (this->key_collected && target_reached) {
+            this->is_over = true;
+            // TODO: Win
+        }
+    } else {
+        if (target_reached) {
+            this->is_over = true;
+            // TODO: Win
+        }
+    }
+
+    // Move pacman
+    this->pacman->update_position();
 }
 
 void Game::free_objects() {
@@ -89,30 +170,3 @@ void Game::free_objects() {
     delete this->map;
 }
 
-void Game::Start() {
-    std::cout << "Game started" << std::endl;
-}
-
-void Game::End() {
-    std::cout << "Game ended" << std::endl;
-}
-
-void Game::Pause() {
-    std::cout << "Game paused" << std::endl;
-}
-
-void Game::Resume() {
-    std::cout << "Game resumed" << std::endl;
-}
-
-void Game::Restart() {
-    std::cout << "Game restarted" << std::endl;
-}
-
-void Game::Update() {
-    std::cout << "Game updated" << std::endl;
-}
-
-void Game::Draw() {
-    std::cout << "Game drawn" << std::endl;
-}

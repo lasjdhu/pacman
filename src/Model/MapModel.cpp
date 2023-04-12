@@ -7,6 +7,10 @@ Map::Map() {
     std::cout << "[+] Map object created" << std::endl;
 }
 
+std::vector<std::vector<MapObject>> Map::get_layout() {
+    return this->map_layout;
+}
+
 void Map::load_map(int width, int height, std::string map) {
     this->map_layout.resize(height);
 
@@ -63,6 +67,14 @@ void Map::free_map_objects() {
  */
 StaticMapObjects::StaticMapObjects(Position pos) {
     this->pos = pos;
+}
+
+int StaticMapObjects::get_position_x() {
+    return this->pos.x;
+}
+
+int StaticMapObjects::get_position_y() {
+    return this->pos.y;
 }
 
 Key::Key(Position pos) : StaticMapObjects(pos) {

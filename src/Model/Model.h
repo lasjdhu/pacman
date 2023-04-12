@@ -27,40 +27,50 @@ typedef enum {
     GHOST
 } MapObject;
 
+typedef enum {
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+    NONE
+} Direction;
+
 /**
  * Character class
  */
 class Character {
-protected:
+private:
     Position pos;
-    int speed;
+    Direction dir;
 public:
-    Character(int speed);
+    Character();
 
-    void set_position(Position pos);
+    void start_position(Position pos);
+
+    Direction get_direction();
+    void set_direction(Direction dir);
+
+    int get_position_x();
+    int get_position_y();
+    void update_position();
 };
 
 /**
  * Pacman class
  */
-class Pacman : Character {
+class Pacman : public Character {
 private:
     int health;
 public:
-
-    Pacman(int speed, int health);
-
-    void Move();
+    Pacman(int health);
 };
 
 /**
  * Ghost class
  */
-class Ghost : Character {
+class Ghost : public Character {
 public:
-    Ghost(int speed);
-
-    void Move();
+    Ghost();
 };
 
 /**
@@ -71,22 +81,24 @@ private:
     Position pos;
 public:
     StaticMapObjects(Position pos);
+    int get_position_x();
+    int get_position_y();
 };
 
 // Key map object
-class Key : StaticMapObjects {
+class Key : public StaticMapObjects {
 public:
     Key(Position pos);
 };
 
 // Starting position
-class StartPos : StaticMapObjects {
+class StartPos : public StaticMapObjects {
 public:
     StartPos(Position pos);
 };
 
 // Target position
-class TargetPos : StaticMapObjects {
+class TargetPos : public StaticMapObjects {
 public:
     TargetPos(Position pos);
 };
@@ -103,6 +115,7 @@ public:
     TargetPos* target_pos;
 
     Map();
+    std::vector<std::vector<MapObject>> get_layout();
     // creates map from input and calls char2mapObject
     void load_map(int width, int height, std::string map);
     // converts char to MapObject
@@ -119,42 +132,29 @@ public:
 class Game {
 private:
     Mapsize map_size;
+    int num_ghosts;
+public:
     Pacman* pacman;
     Ghost** ghosts;
-    int num_ghosts;
-    bool has_key = false;
-    // maybe needed for later
-    bool has_started = false;
-    bool is_paused = false;
-    bool is_over = false;
-public:
     Map* map;
+    bool is_over;
+    bool is_paused;
+    bool contains_key = false;
+    bool key_collected = false;
 
     Game();
 
-    void init_pacman(int speed, int health);
+    void init_pacman(int health);
 
-    void init_ghosts(int speed);
+    void init_ghosts();
 
     void init_map();
 
     int parse_map(QString &content);
 
+    void check_collision();
+
     void free_objects();
-
-    void Start();
-
-    void End();
-
-    void Pause();
-
-    void Resume();
-
-    void Restart();
-
-    void Update();
-
-    void Draw();
 };
 
 #endif // MODEL_H
