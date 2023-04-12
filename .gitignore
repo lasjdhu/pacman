@@ -84,3 +84,8 @@ CMakeFiles/
 doc/
 icp_project
 
+# Config
+.vscode/
+src/compile_commands.json
+src/Makefile
+
