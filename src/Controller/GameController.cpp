@@ -39,8 +39,6 @@ void GameController::initGame(QString &content) {
     game.pacman->start_position({game.map->start_pos->get_position_x(), game.map->start_pos->get_position_y()});
     game.pacman->set_direction(Direction::NONE);
 
-    auto start = std::chrono::steady_clock::now();
-
     QCoreApplication* app = QCoreApplication::instance();
 
     // Start game loop

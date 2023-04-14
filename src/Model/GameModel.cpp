@@ -102,9 +102,8 @@ void Game::check_collision() {
         //std::cout << "RIGHT" << std::endl;
         next_position = {this->pacman->get_position_x()+1, this->pacman->get_position_y()};
         break;
-    default:
-        std::cerr << "[-] Invalid direction" << std::endl;
-        exit(1);
+    case Direction::NONE:
+        return;
     }
 
     // Check if next position is out of bounds
