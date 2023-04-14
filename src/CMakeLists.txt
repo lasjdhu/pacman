@@ -66,8 +66,9 @@ set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
     "CMakeFiles"
     "icp_project_autogen"
     "icp_project"
-    "build-src-Desktop-Debug"
-    "src/CMakeLists.txt.user"
+    "build-src-Desktop-Debug/"
+    "build-src-Desktop-Profile/"
+    "./src/CMakeLists.txt.user"
     "xname01-xivanu00.zip"
 )
 
