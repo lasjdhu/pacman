@@ -6,7 +6,7 @@ InterfaceController::InterfaceController(QStatusBar *statusBar, Ui::MainWindow *
 
 void InterfaceController::loadFile() {
     // Get filename
-    QString filename = QFileDialog::getOpenFileName(qobject_cast<QWidget*>(parent()), "Open File", "examples/", "Text Files (*.txt)");
+    QString filename = QFileDialog::getOpenFileName(qobject_cast<QWidget*>(parent()), "Open File", "../examples/", "Text Files (*.txt)");
     if (filename.isEmpty()) {
         statusBar->showMessage("No file loaded");
         return;
@@ -31,7 +31,7 @@ void InterfaceController::loadFile() {
 
 void InterfaceController::saveFile() {
     // Get filename
-    QString filename = QFileDialog::getSaveFileName(qobject_cast<QWidget*>(parent()), "Save File", "examples/", "Text Files (*.txt)");
+    QString filename = QFileDialog::getSaveFileName(qobject_cast<QWidget*>(parent()), "Save File", "../examples/", "Text Files (*.txt)");
     if (filename.isEmpty()) {
         statusBar->showMessage("No file saved");
         return;

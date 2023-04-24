@@ -7,68 +7,72 @@ GameController::GameController(QStatusBar *statusBar, Ui::MainWindow *ui, QObjec
 }
 
 void GameController::onFileLoaded(QString content) {
-    initGame(content);
+    runGame(content);
 }
 
-void GameController::initGame(QString &content) {
-    Game game;
-    game.init_map();
-    game.is_over = false;
+void GameController::runGame(QString &content) {
+    game = new Game;
+    game->init_map();
+    game->is_over = false;
 
-    switch (game.parse_map(content)) {
+    switch (game->parse_map(content)) {
     case -1:
         statusBar->showMessage("[X] ERROR: Map needs to have specified starting position");
-        game.map->free_map_objects();
+        game->map->free_map_objects();
         return;
     case -2:
         statusBar->showMessage("[X] ERROR: Map needs to have specified target position");
-        game.map->free_map_objects();
+        game->map->free_map_objects();
         return;
     case -3:
         // Maybe not count this as an error?
         statusBar->showMessage("[X] ERROR: Map has more than one key");
-        game.map->free_map_objects();
+        game->map->free_map_objects();
         return;
     default:
         break;
     }
 
-    game.init_pacman(1);
-    game.init_ghosts();
+    game->init_pacman(1);
+    game->init_ghosts();
 
-    game.pacman->start_position({game.map->start_pos->get_position_x(), game.map->start_pos->get_position_y()});
-    game.pacman->set_direction(Direction::NONE);
+    game->pacman->start_position({game->map->start_pos->get_position_x(), game->map->start_pos->get_position_y()});
+    game->pacman->set_direction(Direction::NONE);
 
-    QCoreApplication* app = QCoreApplication::instance();
+    gameWidget = new GameWidget(game);
 
-    // Start game loop
-    while (true) {
-        // keyboard input
-        if (app->eventDispatcher()->hasPendingEvents()) {
-            app->processEvents();
-            if (temp_dir != Direction::NONE) {
-                game.pacman->set_direction(temp_dir);
-                temp_dir = Direction::NONE;
-            }
+    QVBoxLayout *layout = new QVBoxLayout(ui->centralwidget);
+    layout->addWidget(gameWidget);
+    layout->setAlignment(Qt::AlignCenter);
+    ui->centralwidget->setLayout(layout);
+
+    // Set up a timer to update the game state every 100 ms
+    timer.setInterval(500);
+    timer.start();
+    QObject::connect(&timer, &QTimer::timeout, [this](){
+        if (temp_dir != Direction::NONE) {
+            game->pacman->set_direction(temp_dir);
+            temp_dir = Direction::NONE;
         }
 
-        // model update
-        game.check_collision();
-        std::cout << "Pacman position: " << game.pacman->get_position_x() << " " << game.pacman->get_position_y() << std::endl;
+        game->check_collision();
 
-        // view update
+        std::cout << "Pacman position: " << game->pacman->get_position_x() << " " << game->pacman->get_position_y() << std::endl;
+        std::cout << "Ghost1 position: " << game->ghosts[1]->get_position_x() << " " << game->ghosts[1]->get_position_y() << std::endl;
 
-        if (game.is_over) break;
+        gameWidget->updateGameState(game);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    }
-
-    // Display map - delete this later - view should handle this
-    game.map->print_map(*ui->textBrowser);
-
-    // cleanup memory
-    game.map->free_map_objects();
-    game.free_objects();
+        if (game->is_over) {
+            timer.stop();
+            // cleanup memory
+            game->map->free_map_objects();
+            game->free_objects();
+            delete gameWidget;
+            gameWidget = nullptr;
+            delete game;
+            game = nullptr;
+        }
+    });
 }
 
 bool GameController::eventFilter(QObject* obj, QEvent* event) {

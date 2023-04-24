@@ -83,6 +83,7 @@ icp_project_autogen/
 CMakeFiles/
 doc/
 icp_project
+src/CMakeLists.txt.user
 
 # Config
 .vscode/

@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "../Controller/Controller.h"
+#include "GameWidget.h"
 #include <QMainWindow>
 #include <QtWidgets>
 

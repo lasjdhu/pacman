@@ -160,6 +160,14 @@ void Game::check_collision() {
     this->pacman->update_position();
 }
 
+int Game::get_width() {
+    return this->map_size.width;
+}
+
+int Game::get_height() {
+    return this->map_size.height;
+}
+
 void Game::free_objects() {
     delete this->pacman;
     for (int i = 0; i < this->num_ghosts; i++) {

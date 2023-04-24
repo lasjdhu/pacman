@@ -24,7 +24,8 @@ typedef enum {
     KEY,
     START,
     TARGET,
-    GHOST
+    GHOST,
+    INVALID
 } MapObject;
 
 typedef enum {
@@ -120,10 +121,10 @@ public:
     void load_map(int width, int height, std::string map);
     // converts char to MapObject
     MapObject char2mapObject(char c);
-    // print map on a screen
-    void print_map(QTextBrowser &text);
     // frees memory of static objects
     void free_map_objects();
+
+    MapObject get_object(int x, int y);
 };
 
 /**
@@ -132,11 +133,11 @@ public:
 class Game {
 private:
     Mapsize map_size;
-    int num_ghosts;
 public:
     Pacman* pacman;
     Ghost** ghosts;
     Map* map;
+    int num_ghosts;
     bool is_over;
     bool is_paused;
     bool contains_key = false;
@@ -151,6 +152,10 @@ public:
     void init_map();
 
     int parse_map(QString &content);
+
+    int get_width();
+
+    int get_height();
 
     void check_collision();
 

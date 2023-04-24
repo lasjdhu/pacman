@@ -18,6 +18,8 @@ set(PROJECT_SOURCES
     Model/MapModel.cpp
     Model/CharacterModel.cpp
     Model/Model.h
+    View/GameWidget.cpp
+    View/GameWidget.h
     View/mainwindow.cpp
     View/mainwindow.h
     View/mainwindow.ui

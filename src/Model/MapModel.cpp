@@ -28,6 +28,14 @@ void Map::load_map(int width, int height, std::string map) {
     std::cout << "[+] Map loaded" << std::endl;
 }
 
+MapObject Map::get_object(int x, int y) {
+    if (y >= 0 && y < map_layout.size() && x >= 0 && x < map_layout[y].size()) {
+        return map_layout[y][x];
+    } else {
+        return MapObject::INVALID;
+    }
+}
+
 MapObject Map::char2mapObject(char c) {
     switch (c) {
     case '.':
@@ -44,15 +52,6 @@ MapObject Map::char2mapObject(char c) {
         return MapObject::KEY;
     default:
         return MapObject::EMPTY;
-    }
-}
-
-void Map::print_map(QTextBrowser &text) {
-    for (int i = 0; i < this->map_layout.size(); i++) {
-        for (int j = 0; j < this->map_layout[i].size(); j++) {
-            text.insertPlainText(QString::number(this->map_layout[i][j]));
-        }
-        text.insertPlainText("\n");
     }
 }
 
