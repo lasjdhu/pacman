@@ -53,6 +53,8 @@ public:
 
     int get_position_x();
     int get_position_y();
+    Position get_next_position();
+
     void update_position();
 };
 
@@ -64,6 +66,8 @@ private:
     int health;
 public:
     Pacman(int health);
+    int get_health();
+    void take_damage();
 };
 
 /**
@@ -72,6 +76,7 @@ public:
 class Ghost : public Character {
 public:
     Ghost();
+    void calculate_direction(std::vector<std::vector<MapObject>> map_layout, Mapsize map_size);
 };
 
 /**
@@ -92,12 +97,6 @@ public:
     Key(Position pos);
 };
 
-// Starting position
-class StartPos : public StaticMapObjects {
-public:
-    StartPos(Position pos);
-};
-
 // Target position
 class TargetPos : public StaticMapObjects {
 public:
@@ -112,7 +111,6 @@ private:
     std::vector <std::vector <MapObject>> map_layout;
 public:
     Key* key;
-    StartPos* start_pos;
     TargetPos* target_pos;
 
     Map();
@@ -133,6 +131,8 @@ public:
 class Game {
 private:
     Mapsize map_size;
+    void init_pacman(int health);
+    void init_ghosts(std::vector<Position> ghost_positions);
 public:
     Pacman* pacman;
     Ghost** ghosts;
@@ -144,10 +144,6 @@ public:
     bool key_collected = false;
 
     Game();
-
-    void init_pacman(int health);
-
-    void init_ghosts();
 
     void init_map();
 

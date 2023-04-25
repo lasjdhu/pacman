@@ -56,7 +56,6 @@ MapObject Map::char2mapObject(char c) {
 }
 
 void Map::free_map_objects() {
-    delete this->start_pos;
     delete this->target_pos;
     delete this->key;
 }
@@ -78,11 +77,6 @@ int StaticMapObjects::get_position_y() {
 
 Key::Key(Position pos) : StaticMapObjects(pos) {
     std::cout << "[+] Key object created on (" <<
-        pos.x << ", " << pos.y << ")" << std::endl;
-}
-
-StartPos::StartPos(Position pos) : StaticMapObjects(pos) {
-    std::cout << "[+] Start object created on (" <<
         pos.x << ", " << pos.y << ")" << std::endl;
 }
 
