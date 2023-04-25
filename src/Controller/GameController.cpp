@@ -33,12 +33,6 @@ void GameController::runGame(QString &content) {
         break;
     }
 
-    game->init_pacman(1);
-    game->init_ghosts();
-
-    game->pacman->start_position({game->map->start_pos->get_position_x(), game->map->start_pos->get_position_y()});
-    game->pacman->set_direction(Direction::NONE);
-
     gameWidget = new GameWidget(game);
 
     QVBoxLayout *layout = new QVBoxLayout(ui->centralwidget);
@@ -47,7 +41,7 @@ void GameController::runGame(QString &content) {
     ui->centralwidget->setLayout(layout);
 
     // Set up a timer to update the game state every 100 ms
-    timer.setInterval(500);
+    timer.setInterval(300);
     timer.start();
     QObject::connect(&timer, &QTimer::timeout, [this](){
         if (temp_dir != Direction::NONE) {
@@ -57,8 +51,7 @@ void GameController::runGame(QString &content) {
 
         game->check_collision();
 
-        std::cout << "Pacman position: " << game->pacman->get_position_x() << " " << game->pacman->get_position_y() << std::endl;
-        std::cout << "Ghost1 position: " << game->ghosts[1]->get_position_x() << " " << game->ghosts[1]->get_position_y() << std::endl;
+        //std::cout << "Pacman position: " << game->pacman->get_position_x() << " " << game->pacman->get_position_y() << std::endl;
 
         gameWidget->updateGameState(game);
 
@@ -81,22 +74,18 @@ bool GameController::eventFilter(QObject* obj, QEvent* event) {
         switch (keyEvent->key()) {
         case Qt::Key_Up:
         case Qt::Key_W:
-            std::cout << "UP" << std::endl;
             temp_dir = Direction::UP;
             break;
         case Qt::Key_Down:
         case Qt::Key_S:
-            std::cout << "DOWN" << std::endl;
             temp_dir = Direction::DOWN;
             break;
         case Qt::Key_Left:
         case Qt::Key_A:
-            std::cout << "LEFT" << std::endl;
             temp_dir = Direction::LEFT;
             break;
         case Qt::Key_Right:
         case Qt::Key_D:
-            std::cout << "RIGHT" << std::endl;
             temp_dir = Direction::RIGHT;
             break;
         }

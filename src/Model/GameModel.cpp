@@ -11,10 +11,11 @@ void Game::init_pacman(int health) {
     this->pacman = new Pacman(health);
 }
 
-void Game::init_ghosts() {
+void Game::init_ghosts(std::vector<Position> ghost_positions) {
     this->ghosts = new Ghost*[this->num_ghosts];
     for (int i = 0; i < this->num_ghosts; i++) {
         this->ghosts[i] = new Ghost();
+        this->ghosts[i]->start_position(ghost_positions[i]);
     }
 }
 
@@ -30,6 +31,9 @@ int Game::parse_map(QString &content) {
     int num_startpos = 0; int num_targetpos = 0; int num_keys = 0;
     this->num_ghosts = 0;
 
+    Position pacman_position;
+    std::vector<Position> ghost_positions;
+
     char c;
     int i = -1; // We don't count first line with width and height declaration
     int j = 0;
@@ -41,6 +45,7 @@ int Game::parse_map(QString &content) {
         switch (c) {
         case 'G':
             this->num_ghosts++;
+            ghost_positions.push_back({j, i});
             break;
         case 'K':
             num_keys++;
@@ -49,7 +54,7 @@ int Game::parse_map(QString &content) {
             break;
         case 'S':
             num_startpos++;
-            this->map->start_pos = new StartPos({j, i});
+            pacman_position = {j, i};
             break;
         case 'T':
             num_targetpos++;
@@ -74,6 +79,13 @@ int Game::parse_map(QString &content) {
 
     if (num_keys > 1) return -3;
 
+    // init pacman
+    this->init_pacman(1);
+    this->pacman->start_position({pacman_position});
+    this->pacman->set_direction(Direction::NONE);
+
+    // init ghosts
+    this->init_ghosts(ghost_positions);
 
     // load map
     this->map->load_map(this->map_size.width, this->map_size.height, map_layout);
@@ -81,30 +93,12 @@ int Game::parse_map(QString &content) {
     return 0;
 }
 
+
 void Game::check_collision() {
     // Calculate next position
     Position next_position;
 
-    switch (this->pacman->get_direction()) {
-    case Direction::UP:
-        //std::cout << "UP" << std::endl;
-        next_position = {this->pacman->get_position_x(), this->pacman->get_position_y()-1};
-        break;
-    case Direction::DOWN:
-        //std::cout << "DOWN" << std::endl;
-        next_position = {this->pacman->get_position_x(), this->pacman->get_position_y()+1};
-        break;
-    case Direction::LEFT:
-        //std::cout << "LEFT" << std::endl;
-        next_position = {this->pacman->get_position_x()-1, this->pacman->get_position_y()};
-        break;
-    case Direction::RIGHT:
-        //std::cout << "RIGHT" << std::endl;
-        next_position = {this->pacman->get_position_x()+1, this->pacman->get_position_y()};
-        break;
-    case Direction::NONE:
-        return;
-    }
+    next_position = this->pacman->get_next_position();
 
     // Check if next position is out of bounds
     if (next_position.x < 0 || next_position.x >= this->map_size.width) {
@@ -119,45 +113,61 @@ void Game::check_collision() {
         return;
     }
 
-    // Check if next position is a ghost
+    // Check collision with ghosts -- probably will rework this later
     for (int i = 0; i < this->num_ghosts; i++) {
         if (this->ghosts[i]->get_position_x() == next_position.x
             && this->ghosts[i]->get_position_y() == next_position.y) {
-            return;
-            // TODO: Game over
+            this->pacman->take_damage();
+        }
+        if (this->ghosts[i]->get_position_x() == this->pacman->get_position_x()
+            && this->ghosts[i]->get_position_y() == this->pacman->get_position_y()) {
+            this->pacman->take_damage();
         }
     }
 
+    // Check pacman health
+    if (this->pacman->get_health() <= 0) {
+        this->is_over = true;
+    }
+
     // Check if next position is a key
-    if (this->contains_key) {
+    if (this->contains_key && this->key_collected == false) {
         if (this->map->key->get_position_x() == next_position.x
             && this->map->key->get_position_y() == next_position.y) {
             this->key_collected = true;
             // TODO: remove key from map
+            std::cout << "Key collected" << std::endl;
         }
     }
 
     // Target collision
     bool target_reached = false;
 
-    if (this->pacman->get_position_x() == this->map->target_pos->get_position_x()
-         && this->pacman->get_position_y() == this->map->target_pos->get_position_y()) {
+    if (next_position.x == this->map->target_pos->get_position_x()
+         && next_position.y == this->map->target_pos->get_position_y()) {
         target_reached = true;
     }
     if (this->contains_key) {
         if (this->key_collected && target_reached) {
             this->is_over = true;
             // TODO: Win
+            std::cout << "Win" << std::endl;
         }
     } else {
         if (target_reached) {
             this->is_over = true;
             // TODO: Win
+            std::cout << "Win" << std::endl;
         }
     }
 
     // Move pacman
     this->pacman->update_position();
+    // Move ghosts
+    for (int i = 0; i < this->num_ghosts; i++) {
+        this->ghosts[i]->calculate_direction(this->map->get_layout(), this->map_size);
+        this->ghosts[i]->update_position();
+    }
 }
 
 int Game::get_width() {
