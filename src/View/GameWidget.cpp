@@ -24,10 +24,10 @@ void GameWidget::paintEvent(QPaintEvent *event) {
             QColor color;
             switch (o) {
             case WALL:
-                color = Qt::blue;
+                pixmap = QPixmap("../src/images/wall.jpg");
                 break;
             case TARGET:
-                color = Qt::white;
+                pixmap = QPixmap("../src/images/flag.png");
                 break;
             case KEY:
                 if (game->key_collected == false) {
