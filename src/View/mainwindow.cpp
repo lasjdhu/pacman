@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Load file
     connect(ui->actionLoad, &QAction::triggered, interface, &InterfaceController::loadFile);
     // Save file
-    connect(ui->actionSave, &QAction::triggered, interface, &InterfaceController::saveFile);
+    connect(ui->actionSave, &QAction::triggered, [=]() { interface->saveFile(game->getGame()); });
     // Show help
     connect(ui->actionUsage, &QAction::triggered, interface, &InterfaceController::displayHelp);
 }

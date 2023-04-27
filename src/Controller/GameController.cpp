@@ -10,6 +10,10 @@ void GameController::onFileLoaded(QString content) {
     runGame(content);
 }
 
+Game* GameController::getGame() {
+    return game;
+}
+
 void GameController::runGame(QString &content) {
     game = new Game;
     game->init_map();
@@ -55,6 +59,7 @@ void GameController::runGame(QString &content) {
 
         gameWidget->updateGameState(game);
 
+        // TODO: is_over || is_win
         if (game->is_over) {
             timer.stop();
             // cleanup memory

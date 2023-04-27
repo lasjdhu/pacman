@@ -4,8 +4,6 @@
 #include "../Model/Model.h"
 #include "../View/mainwindow.h"
 #include "../View/ui_mainwindow.h"
-#include <chrono>
-#include <thread>
 #include <QObject>
 #include <QStatusBar>
 #include <QKeyEvent>
@@ -18,13 +16,14 @@ class GameController : public QObject{
 public:
     GameController(QStatusBar *statusBar, Ui::MainWindow *ui, QObject *parent);
     void runGame(QString &content);
+    Game* getGame();
     Direction temp_dir;
 public slots:
     void onFileLoaded(QString content);
 private:
     QStatusBar *statusBar;
     QTimer timer;
-    Game *game = nullptr;
+    Game *game;
     GameWidget *gameWidget;
     Ui::MainWindow *ui;
     bool eventFilter(QObject* obj, QEvent* event);
@@ -38,7 +37,7 @@ signals:
     void fileLoaded(QString content);
 public slots:
     void loadFile();
-    void saveFile();
+    void saveFile(Game *game);
     void displayHelp();
 private:
     QStatusBar *statusBar;

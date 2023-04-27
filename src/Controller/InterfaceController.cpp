@@ -29,7 +29,7 @@ void InterfaceController::loadFile() {
     emit fileLoaded(content);
 }
 
-void InterfaceController::saveFile() {
+void InterfaceController::saveFile(Game *game) {
     // Get filename
     QString filename = QFileDialog::getSaveFileName(qobject_cast<QWidget*>(parent()), "Save File", "../examples/", "Text Files (*.txt)");
     if (filename.isEmpty()) {
@@ -44,41 +44,57 @@ void InterfaceController::saveFile() {
         return;
     }
 
-    QString content = ui->textBrowser->toPlainText();
-    QStringList rows = content.split("\n");
+    QString currentMap;
 
-    while (!rows.isEmpty() && rows.last().isEmpty()) {
-        rows.removeLast();
-    }
+    int width = game->get_width();
+    int height = game->get_height();
 
-    int numRows = rows.size();
-    int numCols = numRows > 0 ? rows[0].size() : 0;
+    currentMap += QString("%1 %2\n").arg(width).arg(height);
 
-    for (int i = 0; i < numRows; i++) {
-        for (int j = 0; j < numCols; j++) {
-            QChar c = rows[i][j];
-            if (c == '0') {
-                rows[i][j] = '.';
-            } else if (c == '1') {
-                rows[i][j] = 'X';
-            } else if (c == '2') {
-                rows[i][j] = 'K';
-            } else if (c == '3') {
-                rows[i][j] = 'S';
-            } else if (c == '4') {
-                rows[i][j] = 'T';
-            } else if (c == '5') {
-                rows[i][j] = 'G';
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            if (x == game->pacman->get_position_x() &&
+                y == game->pacman->get_position_y())
+            {
+                currentMap += 'S';
+            } else {
+                bool is_ghost = false;
+                for (int i = 0; i < game->num_ghosts; ++i) {
+                    if (x == game->ghosts[i]->get_position_x() &&
+                        y == game->ghosts[i]->get_position_y())
+                    {
+                        currentMap += 'G';
+                        is_ghost = true;
+                        break;
+                    }
+                }
+                if (!is_ghost) {
+                    MapObject o = game->map->get_object(x, y);
+                    switch (o) {
+                    case EMPTY:
+                        currentMap += '.';
+                        break;
+                    case WALL:
+                        currentMap += 'X';
+                        break;
+                    case KEY:
+                        currentMap += 'K';
+                        break;
+                    case TARGET:
+                        currentMap += 'T';
+                        break;
+                    default:
+                        currentMap += '.';
+                    }
+                }
             }
         }
+        currentMap += '\n';
     }
 
-    QString sizes = QString("%1 %2").arg(numRows).arg(numCols);
-    QString gameState = sizes + "\n" + rows.join("\n") + "\n";
-
-    // Write gameState to a file
+    // Write currentMap to a file
     QTextStream out(&file);
-    out << gameState;
+    out << currentMap;
 
     file.close();
     statusBar->showMessage(QString("File \"%1\" saved").arg(filename));

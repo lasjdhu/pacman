@@ -13,12 +13,11 @@ void GameWidget::updateGameState(Game* game) {
     update();
 }
 
-
 void GameWidget::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     // Draw the map
-    for (int x = 0; x < game->get_width(); x++) {
-        for (int y = 0; y < game->get_height(); y++) {
+    for (int y = 0; y < game->get_height(); y++) {
+        for (int x = 0; x < game->get_width(); x++) {
             MapObject o = game->map->get_object(x, y);
             QRectF rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
             QColor color;
