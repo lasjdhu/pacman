@@ -53,9 +53,8 @@ void GameController::runGame(QString &content) {
             temp_dir = Direction::NONE;
         }
 
-        game->check_collision();
-
-        //std::cout << "Pacman position: " << game->pacman->get_position_x() << " " << game->pacman->get_position_y() << std::endl;
+        game->player_collision();
+        game->ghost_collision();
 
         gameWidget->updateGameState(game);
 

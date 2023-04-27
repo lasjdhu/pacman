@@ -94,7 +94,7 @@ int Game::parse_map(QString &content) {
 }
 
 
-void Game::check_collision() {
+void Game::player_collision() {
     // Calculate next position
     Position next_position;
 
@@ -163,6 +163,9 @@ void Game::check_collision() {
 
     // Move pacman
     this->pacman->update_position();
+}
+
+void Game::ghost_collision() {
     // Move ghosts
     for (int i = 0; i < this->num_ghosts; i++) {
         this->ghosts[i]->calculate_direction(this->map->get_layout(), this->map_size);

@@ -153,7 +153,9 @@ public:
 
     int get_height();
 
-    void check_collision();
+    void player_collision();
+
+    void ghost_collision();
 
     void free_objects();
 };
