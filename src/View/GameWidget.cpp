@@ -19,25 +19,49 @@ void GameWidget::paintEvent(QPaintEvent *event) {
     for (int y = 0; y < game->get_height(); y++) {
         for (int x = 0; x < game->get_width(); x++) {
             MapObject o = game->map->get_object(x, y);
-            QRectF rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+            QRect rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+            QPixmap pixmap;
             QColor color;
-            if (o == WALL) {
+            switch (o) {
+            case WALL:
                 color = Qt::blue;
-            } else if (o == TARGET) {
-                color = Qt::green;
-            } else if (o == KEY) {
-                color = Qt::red;
-            } else {
-                color = Qt::black;
+                break;
+            case TARGET:
+                color = Qt::white;
+                break;
+            case KEY:
+                if (game->key_collected == false) {
+                    pixmap = QPixmap("../src/images/key.png");
+                } else {
+                    color = Qt::black;
+                }
+                break;
+            default:
+                break;
             }
-            painter.fillRect(rect, color);
+            if (!pixmap.isNull()) {
+                painter.drawPixmap(rect, pixmap);
+            } else {
+                painter.fillRect(rect, color);
+            }
         }
     }
     // Draw the characters
-    painter.setBrush(Qt::yellow); // Pacman color
-    painter.drawEllipse(game->pacman->get_position_x() * TILE_SIZE, game->pacman->get_position_y() * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-    painter.setBrush(Qt::white); // Ghost color
+    QPixmap pacmanPixmap("../src/images/pacman.png");
+    QPixmap ghostPixmapBlue("../src/images/ghostBlue.png");
+    QPixmap ghostPixmapRed("../src/images/ghostRed.png");
+    painter.drawPixmap(game->pacman->get_position_x() * TILE_SIZE,
+                       game->pacman->get_position_y() * TILE_SIZE,
+                       TILE_SIZE, TILE_SIZE, pacmanPixmap);
     for (int i = 0; i < game->num_ghosts; ++i) {
-        painter.drawEllipse(game->ghosts[i]->get_position_x() * TILE_SIZE, game->ghosts[i]->get_position_y() * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+        if (i % 2 == 0) {
+            painter.drawPixmap(game->ghosts[i]->get_position_x() * TILE_SIZE,
+                               game->ghosts[i]->get_position_y() * TILE_SIZE,
+                               TILE_SIZE, TILE_SIZE, ghostPixmapBlue);
+        } else {
+            painter.drawPixmap(game->ghosts[i]->get_position_x() * TILE_SIZE,
+                               game->ghosts[i]->get_position_y() * TILE_SIZE,
+                               TILE_SIZE, TILE_SIZE, ghostPixmapRed);
+        }
     }
 }
