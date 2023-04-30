@@ -22,27 +22,29 @@ void GameWidget::paintEvent(QPaintEvent *event) {
             QRect rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
             QPixmap pixmap;
             QColor color;
+            
+            if (o != WALL) {
+                pixmap = QPixmap("../src/images/grass.jpg");
+                painter.drawPixmap(rect, pixmap);
+            }
+
             switch (o) {
             case WALL:
                 pixmap = QPixmap("../src/images/wall.jpg");
+                painter.drawPixmap(rect, pixmap);
                 break;
             case TARGET:
                 pixmap = QPixmap("../src/images/flag.png");
+                painter.drawPixmap(rect, pixmap);
                 break;
             case KEY:
-                if (game->key_collected == false) {
+                if (!game->map->key->is_collected()) {
                     pixmap = QPixmap("../src/images/key.png");
-                } else {
-                    color = Qt::black;
+                    painter.drawPixmap(rect, pixmap);
                 }
                 break;
             default:
                 break;
-            }
-            if (!pixmap.isNull()) {
-                painter.drawPixmap(rect, pixmap);
-            } else {
-                painter.fillRect(rect, color);
             }
         }
     }
@@ -53,7 +55,7 @@ void GameWidget::paintEvent(QPaintEvent *event) {
     painter.drawPixmap(game->pacman->get_position_x() * TILE_SIZE,
                        game->pacman->get_position_y() * TILE_SIZE,
                        TILE_SIZE, TILE_SIZE, pacmanPixmap);
-    for (int i = 0; i < game->num_ghosts; ++i) {
+    for (int i = 0; i < game->get_ghost_count(); ++i) {
         if (i % 2 == 0) {
             painter.drawPixmap(game->ghosts[i]->get_position_x() * TILE_SIZE,
                                game->ghosts[i]->get_position_y() * TILE_SIZE,
