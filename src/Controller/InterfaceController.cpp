@@ -59,7 +59,7 @@ void InterfaceController::saveFile(Game *game) {
                 currentMap += 'S';
             } else {
                 bool is_ghost = false;
-                for (int i = 0; i < game->num_ghosts; ++i) {
+                for (int i = 0; i < game->get_ghost_count(); ++i) {
                     if (x == game->ghosts[i]->get_position_x() &&
                         y == game->ghosts[i]->get_position_y())
                     {

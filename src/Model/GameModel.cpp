@@ -12,8 +12,8 @@ void Game::init_pacman(int health) {
 }
 
 void Game::init_ghosts(std::vector<Position> ghost_positions) {
-    this->ghosts = new Ghost*[this->num_ghosts];
-    for (int i = 0; i < this->num_ghosts; i++) {
+    this->ghosts = new Ghost*[this->get_ghost_count()];
+    for (int i = 0; i < this->get_ghost_count(); i++) {
         this->ghosts[i] = new Ghost();
         this->ghosts[i]->start_position(ghost_positions[i]);
     }
@@ -29,7 +29,6 @@ int Game::parse_map(QString &content) {
 
     std::string map_layout;
     int num_startpos = 0; int num_targetpos = 0; int num_keys = 0;
-    this->num_ghosts = 0;
 
     Position pacman_position;
     std::vector<Position> ghost_positions;
@@ -44,7 +43,7 @@ int Game::parse_map(QString &content) {
 
         switch (c) {
         case 'G':
-            this->num_ghosts++;
+            this->inc_ghost_count();
             ghost_positions.push_back({j, i});
             break;
         case 'K':
@@ -114,27 +113,30 @@ void Game::player_collision() {
     }
 
     // Check collision with ghosts -- probably will rework this later
-    for (int i = 0; i < this->num_ghosts; i++) {
+    for (int i = 0; i < this->get_ghost_count(); i++) {
         if (this->ghosts[i]->get_position_x() == next_position.x
-            && this->ghosts[i]->get_position_y() == next_position.y) {
+             && this->ghosts[i]->get_position_y() == next_position.y) {
             this->pacman->take_damage();
         }
         if (this->ghosts[i]->get_position_x() == this->pacman->get_position_x()
-            && this->ghosts[i]->get_position_y() == this->pacman->get_position_y()) {
+             && this->ghosts[i]->get_position_y() == this->pacman->get_position_y()) {
             this->pacman->take_damage();
         }
     }
 
     // Check pacman health
     if (this->pacman->get_health() <= 0) {
-        this->is_over = true;
+        this->inc_tries();
+        this->set_gamestate(GameState::OVER);
     }
 
+    bool key_collected = this->map->key->is_collected();
+
     // Check if next position is a key
-    if (this->contains_key && this->key_collected == false) {
+    if (this->contains_key && !key_collected) {
         if (this->map->key->get_position_x() == next_position.x
-            && this->map->key->get_position_y() == next_position.y) {
-            this->key_collected = true;
+             && this->map->key->get_position_y() == next_position.y) {
+            this->map->key->collect();
             // TODO: remove key from map
             std::cout << "Key collected" << std::endl;
         }
@@ -148,14 +150,14 @@ void Game::player_collision() {
         target_reached = true;
     }
     if (this->contains_key) {
-        if (this->key_collected && target_reached) {
-            this->is_over = true;
+        if (key_collected && target_reached) {
+            this->set_gamestate(GameState::OVER);
             // TODO: Win
             std::cout << "Win" << std::endl;
         }
     } else {
         if (target_reached) {
-            this->is_over = true;
+            this->set_gamestate(GameState::OVER);
             // TODO: Win
             std::cout << "Win" << std::endl;
         }
@@ -167,7 +169,7 @@ void Game::player_collision() {
 
 void Game::ghost_collision() {
     // Move ghosts
-    for (int i = 0; i < this->num_ghosts; i++) {
+    for (int i = 0; i < this->get_ghost_count(); i++) {
         this->ghosts[i]->calculate_direction(this->map->get_layout(), this->map_size);
         this->ghosts[i]->update_position();
     }
@@ -181,9 +183,33 @@ int Game::get_height() {
     return this->map_size.height;
 }
 
+int Game::get_ghost_count() {
+    return this->ghost_count;
+}
+
+void Game::inc_ghost_count() {
+    this->ghost_count++;
+}
+
+int Game::get_tries() {
+    return this->number_of_tries;
+}
+
+void Game::inc_tries() {
+    this->number_of_tries++;
+}
+
+GameState Game::get_gamestate() {
+    return this->game_state;
+}
+
+void Game::set_gamestate(GameState gamestate) {
+    this->game_state = gamestate;
+}
+
 void Game::free_objects() {
     delete this->pacman;
-    for (int i = 0; i < this->num_ghosts; i++) {
+    for (int i = 0; i < this->get_ghost_count(); i++) {
         delete this->ghosts[i];
     }
     delete this->ghosts;

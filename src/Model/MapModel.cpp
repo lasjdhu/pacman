@@ -80,6 +80,14 @@ Key::Key(Position pos) : StaticMapObjects(pos) {
         pos.x << ", " << pos.y << ")" << std::endl;
 }
 
+bool Key::is_collected() {
+    return this->collected;
+}
+
+void Key::collect() {
+    this->collected = true;
+}
+
 TargetPos::TargetPos(Position pos) : StaticMapObjects(pos) {
     std::cout << "[+] Target object created on (" <<
         pos.x << ", " << pos.y << ")" << std::endl;

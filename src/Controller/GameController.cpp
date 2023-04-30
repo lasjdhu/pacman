@@ -17,7 +17,7 @@ Game* GameController::getGame() {
 void GameController::runGame(QString &content) {
     game = new Game;
     game->init_map();
-    game->is_over = false;
+    game->set_gamestate(GameState::RUNNING);
 
     switch (game->parse_map(content)) {
     case -1:
@@ -44,7 +44,7 @@ void GameController::runGame(QString &content) {
     layout->setAlignment(Qt::AlignCenter);
     ui->centralwidget->setLayout(layout);
 
-    // Set up a timer to update the game state every 100 ms
+    // Set up a timer to update the game state every 300 ms
     timer.setInterval(300);
     timer.start();
     QObject::connect(&timer, &QTimer::timeout, [this](){
@@ -59,8 +59,10 @@ void GameController::runGame(QString &content) {
         gameWidget->updateGameState(game);
 
         // TODO: is_over || is_win
-        if (game->is_over) {
+        if (game->get_gamestate() == GameState::OVER) {
             timer.stop();
+            std::cout << "Number of steps: " << game->pacman->get_steps() << std::endl;
+            std::cout << "Number of tries: " << game->get_tries() << std::endl;
             // cleanup memory
             game->map->free_map_objects();
             game->free_objects();

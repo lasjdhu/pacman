@@ -51,21 +51,31 @@ void Character::update_position() {
     switch (this->dir) {
     case Direction::UP:
         this->pos.y--;
+        this->inc_steps();
         break;
     case Direction::DOWN:
         this->pos.y++;
+        this->inc_steps();
         break;
     case Direction::LEFT:
         this->pos.x--;
+        this->inc_steps();
         break;
     case Direction::RIGHT:
         this->pos.x++;
+        this->inc_steps();
         break;
     default:
         break;
     }
+}
 
-    //std::cout << "Position updated" << std::endl;
+void Character::inc_steps() {
+    this->steps++;
+}
+
+int Character::get_steps() {
+    return this->steps;
 }
 
 /**
@@ -128,7 +138,8 @@ void Ghost::calculate_direction(std::vector<std::vector<MapObject>> map_layout, 
         return;
     }
 
-    // select 
+    /* if ghost can move to the same direction as before,
+       it will, to lower difficulty of the game */
     for (int i = 0; i < possible_directions.size(); i++) {
         if (this->get_direction() == possible_directions[i]) {
             this->set_direction(possible_directions[i]);
@@ -136,6 +147,8 @@ void Ghost::calculate_direction(std::vector<std::vector<MapObject>> map_layout, 
         }
     }
 
+    /* if ghost can't move to the same direction, it will
+       choose a random direction from the possible directions */
     if (possible_directions.size() >= 1) {
         int random_index = rand() % possible_directions.size();
         this->set_direction(possible_directions[random_index]);
