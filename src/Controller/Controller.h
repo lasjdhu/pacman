@@ -1,7 +1,7 @@
 /**
  * Header file for both Interface and Game controllers
  * @file Controller.h
- * @authors Name Surname(xlogin00), Dmitrii Ivanushkin (xivanu00)
+ * @authors Jakub Kratochvil (xkrato67), Dmitrii Ivanushkin (xivanu00)
  */
 
 #ifndef GAMECONTROLLER_H
@@ -85,7 +85,7 @@ private:
 
     /**
      * User input from keyboard to Pacman moving
-     * @param *obj
+     * @param *obj pointer to an object which receives the event
      * @param *event pointer to a key event
      */
     bool eventFilter(QObject *obj, QEvent *event);

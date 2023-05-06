@@ -76,7 +76,7 @@ set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
 )
 
 add_custom_target(pack
-  COMMAND zip -r xname01-xivanu00.zip *
+  COMMAND zip -r xkrato67-xivanu00.zip *
   COMMENT "Making archive..."
 )
 
