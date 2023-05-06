@@ -1,8 +1,11 @@
+/**
+ * Work with Game objects as MODEL
+ * @file GameModel.cpp
+ * @authors Name Surname(xlogin00), Dmitrii Ivanushkin (xivanu00)
+ */
+
 #include "Model.h"
 
-/**
- * Game class
- */
 Game::Game() {
     std::cout << "[+] Game object created" << std::endl;
 }
@@ -79,7 +82,7 @@ int Game::parse_map(QString &content) {
     if (num_keys > 1) return -3;
 
     // init pacman
-    this->init_pacman(1);
+    this->init_pacman(3);
     this->pacman->start_position({pacman_position});
     this->pacman->set_direction(Direction::NONE);
 
@@ -126,7 +129,6 @@ void Game::player_collision() {
 
     // Check pacman health
     if (this->pacman->get_health() <= 0) {
-        this->inc_tries();
         this->set_gamestate(GameState::OVER);
     }
 
@@ -151,14 +153,12 @@ void Game::player_collision() {
     }
     if (this->contains_key) {
         if (key_collected && target_reached) {
-            this->set_gamestate(GameState::OVER);
-            // TODO: Win
+            this->set_gamestate(GameState::WIN);
             std::cout << "Win" << std::endl;
         }
     } else {
         if (target_reached) {
-            this->set_gamestate(GameState::OVER);
-            // TODO: Win
+            this->set_gamestate(GameState::WIN);
             std::cout << "Win" << std::endl;
         }
     }
@@ -189,14 +189,6 @@ int Game::get_ghost_count() {
 
 void Game::inc_ghost_count() {
     this->ghost_count++;
-}
-
-int Game::get_tries() {
-    return this->number_of_tries;
-}
-
-void Game::inc_tries() {
-    this->number_of_tries++;
 }
 
 GameState Game::get_gamestate() {

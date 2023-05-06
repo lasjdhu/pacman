@@ -1,3 +1,9 @@
+/**
+ * Logic of Game events and main thread as CONTROLLER
+ * @file GameController.cpp
+ * @authors Name Surname(xlogin00), Dmitrii Ivanushkin (xivanu00)
+ */
+
 #include "Controller.h"
 
 GameController::GameController(QStatusBar *statusBar, Ui::MainWindow *ui, QObject *parent) :
@@ -14,7 +20,16 @@ Game* GameController::getGame() {
     return game;
 }
 
+void GameController::onGameRestarted(QString content) {
+    endWidget->hide();
+    onFileLoaded(content);
+}
+
 void GameController::runGame(QString &content) {
+    if (ui->centralwidget->layout()) {
+        delete ui->centralwidget->layout();
+    }
+
     game = new Game;
     game->init_map();
     game->set_gamestate(GameState::RUNNING);
@@ -29,7 +44,6 @@ void GameController::runGame(QString &content) {
         game->map->free_map_objects();
         return;
     case -3:
-        // Maybe not count this as an error?
         statusBar->showMessage("[X] ERROR: Map has more than one key");
         game->map->free_map_objects();
         return;
@@ -38,16 +52,30 @@ void GameController::runGame(QString &content) {
     }
 
     gameWidget = new GameWidget(game);
+    stepsLabel = new QLabel(gameWidget);
+    stepsLabel->setText(QString("Steps: %1").arg(game->pacman->get_steps()));
+    stepsLabel->setStyleSheet("QLabel { color: white; font-size: 16pt; }");
+
+    healthLabel = new QLabel(gameWidget);
+    healthLabel->setText(QString("Health: %1").arg(game->pacman->get_health()));
+    healthLabel->setStyleSheet("QLabel { color: white; font-size: 16pt; }");
+
+    QHBoxLayout *labelsLayout = new QHBoxLayout();
+    labelsLayout->addWidget(stepsLabel);
+    labelsLayout->addWidget(healthLabel);
 
     QVBoxLayout *layout = new QVBoxLayout(ui->centralwidget);
+    layout->addLayout(labelsLayout);
     layout->addWidget(gameWidget);
     layout->setAlignment(Qt::AlignCenter);
     ui->centralwidget->setLayout(layout);
 
-    // Set up a timer to update the game state every 300 ms
+    QObject::disconnect(&timer, &QTimer::timeout, nullptr, nullptr);
+
     timer.setInterval(300);
     timer.start();
-    QObject::connect(&timer, &QTimer::timeout, [this](){
+
+    QObject::connect(&timer, &QTimer::timeout, [this, layout, content](){
         if (temp_dir != Direction::NONE) {
             game->pacman->set_direction(temp_dir);
             temp_dir = Direction::NONE;
@@ -57,12 +85,42 @@ void GameController::runGame(QString &content) {
         game->ghost_collision();
 
         gameWidget->updateGameState(game);
+        stepsLabel->setText(QString("Steps: %1").arg(game->pacman->get_steps()));
+        healthLabel->setText(QString("Health: %1").arg(game->pacman->get_health()));
 
-        // TODO: is_over || is_win
-        if (game->get_gamestate() == GameState::OVER) {
+        if (game->get_gamestate() == GameState::OVER || game->get_gamestate() == GameState::WIN) {
             timer.stop();
-            std::cout << "Number of steps: " << game->pacman->get_steps() << std::endl;
-            std::cout << "Number of tries: " << game->get_tries() << std::endl;
+
+            if (stepsLabel) {
+                stepsLabel->deleteLater();
+                stepsLabel = nullptr;
+            }
+            if (healthLabel) {
+                healthLabel->deleteLater();
+                healthLabel = nullptr;
+            }
+
+            if (endWidget == nullptr) {
+                if (game->get_gamestate() == GameState::OVER) {
+                    endWidget = new EndWidget(0, game->pacman->get_steps(), this->number_tries, content);
+                    this->number_tries++;
+                } else {
+                    endWidget = new EndWidget(1, game->pacman->get_steps(), this->number_tries, content);
+                    this->number_tries = 1;
+                }
+                layout->addWidget(endWidget);
+                QObject::connect(endWidget, &EndWidget::gameRestarted, this, &GameController::onGameRestarted);
+            } else {
+                if (game->get_gamestate() == GameState::OVER) {
+                    endWidget->updateContent(0, game->pacman->get_steps(), this->number_tries);
+                    this->number_tries++;
+                } else {
+                    endWidget->updateContent(1, game->pacman->get_steps(), this->number_tries);
+                    this->number_tries = 1;
+                }
+            }
+
+            endWidget->show();
             // cleanup memory
             game->map->free_map_objects();
             game->free_objects();
@@ -74,7 +132,7 @@ void GameController::runGame(QString &content) {
     });
 }
 
-bool GameController::eventFilter(QObject* obj, QEvent* event) {
+bool GameController::eventFilter(QObject *obj, QEvent *event) {
     if (event->type() == QEvent::KeyPress) {
         QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
         switch (keyEvent->key()) {

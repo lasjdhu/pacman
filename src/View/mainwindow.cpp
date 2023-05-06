@@ -1,5 +1,10 @@
+/**
+ * Main window create and delete; Initialization of connects, ui and controllers as VIEW
+ * @file mainwindow.cpp
+ * @authors Name Surname(xlogin00), Dmitrii Ivanushkin (xivanu00)
+ */
+
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

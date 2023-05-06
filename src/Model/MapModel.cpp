@@ -1,8 +1,11 @@
+/**
+ * Work with Map objects as MODEL
+ * @file MapModel.cpp
+ * @authors Name Surname(xlogin00), Dmitrii Ivanushkin (xivanu00)
+ */
+
 #include "Model.h"
 
-/**
- * Map class
- */
 Map::Map() {
     std::cout << "[+] Map object created" << std::endl;
 }
@@ -60,9 +63,6 @@ void Map::free_map_objects() {
     delete this->key;
 }
 
-/**
- * StaticMapObjects class
- */
 StaticMapObjects::StaticMapObjects(Position pos) {
     this->pos = pos;
 }

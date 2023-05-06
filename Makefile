@@ -333,6 +333,30 @@ Model/MapModel.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/icp_project.dir/build.make CMakeFiles/icp_project.dir/Model/MapModel.cpp.s
 .PHONY : Model/MapModel.cpp.s
 
+View/GameWidget.o: View/GameWidget.cpp.o
+.PHONY : View/GameWidget.o
+
+# target to build an object file
+View/GameWidget.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/icp_project.dir/build.make CMakeFiles/icp_project.dir/View/GameWidget.cpp.o
+.PHONY : View/GameWidget.cpp.o
+
+View/GameWidget.i: View/GameWidget.cpp.i
+.PHONY : View/GameWidget.i
+
+# target to preprocess a source file
+View/GameWidget.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/icp_project.dir/build.make CMakeFiles/icp_project.dir/View/GameWidget.cpp.i
+.PHONY : View/GameWidget.cpp.i
+
+View/GameWidget.s: View/GameWidget.cpp.s
+.PHONY : View/GameWidget.s
+
+# target to generate assembly for a file
+View/GameWidget.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/icp_project.dir/build.make CMakeFiles/icp_project.dir/View/GameWidget.cpp.s
+.PHONY : View/GameWidget.cpp.s
+
 View/mainwindow.o: View/mainwindow.cpp.o
 .PHONY : View/mainwindow.o
 
@@ -436,6 +460,9 @@ help:
 	@echo "... Model/MapModel.o"
 	@echo "... Model/MapModel.i"
 	@echo "... Model/MapModel.s"
+	@echo "... View/GameWidget.o"
+	@echo "... View/GameWidget.i"
+	@echo "... View/GameWidget.s"
 	@echo "... View/mainwindow.o"
 	@echo "... View/mainwindow.i"
 	@echo "... View/mainwindow.s"

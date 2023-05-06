@@ -1,7 +1,17 @@
-#include "View/mainwindow.h"
+/**
+ * Main application initialization and show
+ * @file main.cpp
+ * @authors Name Surname(xlogin00), Dmitrii Ivanushkin (xivanu00)
+ */
 
+#include "View/mainwindow.h"
 #include <QApplication>
 
+/**
+ * Main function
+ * @param argc int
+ * @param *argv[] char
+ */
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);

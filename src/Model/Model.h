@@ -1,3 +1,9 @@
+/**
+ * Header file for all model classes
+ * @file Model.h
+ * @authors Name Surname(xlogin00), Dmitrii Ivanushkin (xivanu00)
+ */
+
 #ifndef MODEL_H
 #define MODEL_H
 
@@ -39,7 +45,8 @@ typedef enum {
 typedef enum {
     RUNNING,
     PAUSED,
-    OVER
+    OVER,
+    WIN
 } GameState;
 
 /**
@@ -272,7 +279,6 @@ class Game {
 private:
     Mapsize map_size;
     GameState game_state;
-    int number_of_tries = 1;
     int ghost_count = 0;
     bool contains_key = false;
     void init_pacman(int health);
@@ -321,17 +327,6 @@ public:
      * Function to increment ghost count
      */
     void inc_ghost_count();
-
-    /**
-     * Function to get number of tries
-     * @return int
-     */
-    int get_tries();
-
-    /**
-     * Function to increment number of tries
-     */
-    void inc_tries();
 
     /**
      * Function to get state of the game

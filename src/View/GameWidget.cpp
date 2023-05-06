@@ -1,27 +1,33 @@
-#include "GameWidget.h"
+/**
+ * Painting and updating Game events on the screen as VIEW
+ * @file GameWidget.cpp
+ * @authors Name Surname(xlogin00), Dmitrii Ivanushkin (xivanu00)
+ */
+
+#include "Widget.h"
 
 const int TILE_SIZE = 50;
 
-GameWidget::GameWidget(Game* game, QWidget* parent) :
+GameWidget::GameWidget(Game *game, QWidget *parent) :
     QWidget(parent),
     game(game)
 {
     setFixedSize(game->get_width() * TILE_SIZE, game->get_height() * TILE_SIZE);
 }
 
-void GameWidget::updateGameState(Game* game) {
+void GameWidget::updateGameState(Game *game) {
     update();
 }
 
 void GameWidget::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
-    // Draw the map
+
+    // Draw map
     for (int y = 0; y < game->get_height(); y++) {
         for (int x = 0; x < game->get_width(); x++) {
             MapObject o = game->map->get_object(x, y);
             QRect rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
             QPixmap pixmap;
-            QColor color;
             
             if (o != WALL) {
                 pixmap = QPixmap("../src/images/grass.jpg");
@@ -48,7 +54,8 @@ void GameWidget::paintEvent(QPaintEvent *event) {
             }
         }
     }
-    // Draw the characters
+
+    // Draw characters
     QPixmap pacmanPixmap("../src/images/pacman.png");
     QPixmap ghostPixmapBlue("../src/images/ghostBlue.png");
     QPixmap ghostPixmapRed("../src/images/ghostRed.png");

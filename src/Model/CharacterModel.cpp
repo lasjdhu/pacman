@@ -1,8 +1,11 @@
+/**
+ * Work with Character objects as MODEL
+ * @file CharacterModel.cpp
+ * @authors Name Surname(xlogin00), Dmitrii Ivanushkin (xivanu00)
+ */
+
 #include "Model.h"
 
-/**
- * Character class
- */
 Character::Character() {
 
     std::cout << "[+] Character object created" << std::endl;
@@ -78,9 +81,6 @@ int Character::get_steps() {
     return this->steps;
 }
 
-/**
- * Pacman class
- */
 Pacman::Pacman(int health) {
     this->health = health;
 
@@ -97,9 +97,6 @@ int Pacman::get_health() {
     return this->health;
 }
 
-/**
- * Ghost class
- */
 Ghost::Ghost() {
     std::cout << "[+] Ghost object created" << std::endl;
 }

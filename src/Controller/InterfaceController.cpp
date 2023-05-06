@@ -1,3 +1,9 @@
+/**
+ * Logic of application buttons as CONTROLLER
+ * @file InterfaceController.cpp
+ * @authors Name Surname(xlogin00), Dmitrii Ivanushkin (xivanu00)
+ */
+
 #include "Controller.h"
 
 InterfaceController::InterfaceController(QStatusBar *statusBar, Ui::MainWindow *ui, QObject *parent) :

@@ -19,7 +19,8 @@ set(PROJECT_SOURCES
     Model/CharacterModel.cpp
     Model/Model.h
     View/GameWidget.cpp
-    View/GameWidget.h
+    View/EndWidget.cpp
+    View/Widget.h
     View/mainwindow.cpp
     View/mainwindow.h
     View/mainwindow.ui
