@@ -1,7 +1,7 @@
 /**
  * Work with Game objects as MODEL
  * @file GameModel.cpp
- * @authors Name Surname(xlogin00), Dmitrii Ivanushkin (xivanu00)
+ * @authors Jakub Kratochvil (xkrato67), Dmitrii Ivanushkin (xivanu00)
  */
 
 #include "Model.h"

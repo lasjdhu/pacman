@@ -1,7 +1,7 @@
 /**
  * Work with Map objects as MODEL
  * @file MapModel.cpp
- * @authors Name Surname(xlogin00), Dmitrii Ivanushkin (xivanu00)
+ * @authors Jakub Kratochvil (xkrato67), Dmitrii Ivanushkin (xivanu00)
  */
 
 #include "Model.h"

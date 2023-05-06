@@ -1,7 +1,7 @@
 /**
  * Header file for all model classes
  * @file Model.h
- * @authors Name Surname(xlogin00), Dmitrii Ivanushkin (xivanu00)
+ * @authors Jakub Kratochvil (xkrato67), Dmitrii Ivanushkin (xivanu00)
  */
 
 #ifndef MODEL_H
