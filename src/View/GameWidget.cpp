@@ -15,10 +15,6 @@ GameWidget::GameWidget(Game *game, QWidget *parent) :
     setFixedSize(game->get_width() * TILE_SIZE, game->get_height() * TILE_SIZE);
 }
 
-void GameWidget::updateGameState(Game *game) {
-    update();
-}
-
 void GameWidget::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
 
@@ -73,4 +69,8 @@ void GameWidget::paintEvent(QPaintEvent *event) {
                                TILE_SIZE, TILE_SIZE, ghostPixmapRed);
         }
     }
+}
+
+void GameWidget::updateGameState(Game *game) {
+    update();
 }

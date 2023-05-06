@@ -12,19 +12,6 @@ GameController::GameController(QStatusBar *statusBar, Ui::MainWindow *ui, QObjec
     ui->centralwidget->installEventFilter(this);
 }
 
-void GameController::onFileLoaded(QString content) {
-    runGame(content);
-}
-
-Game* GameController::getGame() {
-    return game;
-}
-
-void GameController::onGameRestarted(QString content) {
-    endWidget->hide();
-    onFileLoaded(content);
-}
-
 void GameController::runGame(QString &content) {
     if (ui->centralwidget->layout()) {
         delete ui->centralwidget->layout();
@@ -51,31 +38,14 @@ void GameController::runGame(QString &content) {
         break;
     }
 
-    gameWidget = new GameWidget(game);
-    stepsLabel = new QLabel(gameWidget);
-    stepsLabel->setText(QString("Steps: %1").arg(game->pacman->get_steps()));
-    stepsLabel->setStyleSheet("QLabel { color: white; font-size: 16pt; }");
-
-    healthLabel = new QLabel(gameWidget);
-    healthLabel->setText(QString("Health: %1").arg(game->pacman->get_health()));
-    healthLabel->setStyleSheet("QLabel { color: white; font-size: 16pt; }");
-
-    QHBoxLayout *labelsLayout = new QHBoxLayout();
-    labelsLayout->addWidget(stepsLabel);
-    labelsLayout->addWidget(healthLabel);
-
-    QVBoxLayout *layout = new QVBoxLayout(ui->centralwidget);
-    layout->addLayout(labelsLayout);
-    layout->addWidget(gameWidget);
-    layout->setAlignment(Qt::AlignCenter);
-    ui->centralwidget->setLayout(layout);
+    initWidgets();
 
     QObject::disconnect(&timer, &QTimer::timeout, nullptr, nullptr);
 
     timer.setInterval(300);
     timer.start();
 
-    QObject::connect(&timer, &QTimer::timeout, [this, layout, content](){
+    QObject::connect(&timer, &QTimer::timeout, [this, content](){
         if (temp_dir != Direction::NONE) {
             game->pacman->set_direction(temp_dir);
             temp_dir = Direction::NONE;
@@ -90,6 +60,9 @@ void GameController::runGame(QString &content) {
 
         if (game->get_gamestate() == GameState::OVER || game->get_gamestate() == GameState::WIN) {
             timer.stop();
+
+            backButton->setVisible(false);
+            forwardButton->setVisible(false);
 
             if (stepsLabel) {
                 stepsLabel->deleteLater();
@@ -132,6 +105,67 @@ void GameController::runGame(QString &content) {
     });
 }
 
+void GameController::replayGame() {
+
+}
+
+void GameController::initWidgets() {
+    gameWidget = new GameWidget(game);
+
+    stepsLabel = new QLabel(gameWidget);
+    stepsLabel->setText(QString("Steps: %1").arg(game->pacman->get_steps()));
+    stepsLabel->setStyleSheet("QLabel { color: white; font-size: 16pt; }");
+
+    healthLabel = new QLabel(gameWidget);
+    healthLabel->setText(QString("Health: %1").arg(game->pacman->get_health()));
+    healthLabel->setStyleSheet("QLabel { color: white; font-size: 16pt; }");
+
+    QHBoxLayout *labelsLayout = new QHBoxLayout();
+    labelsLayout->addWidget(stepsLabel);
+    labelsLayout->addWidget(healthLabel);
+
+    backButton = new QPushButton("Back", ui->centralwidget);
+    backButton->setStyleSheet("QPushButton {"
+                              "    color: white;"
+                              "    font-size: 16pt;"
+                              "    background-color: #333333;"
+                              "    border: none;"
+                              "    padding: 10px 20px;"
+                              "}"
+                              "QPushButton:hover {"
+                              "    background-color: #555555;"
+                              "}"
+                              "QPushButton:pressed {"
+                              "    background-color: #777777;"
+                              "}");
+    forwardButton = new QPushButton("Forward", ui->centralwidget);
+    forwardButton->setStyleSheet("QPushButton {"
+                                 "    color: white;"
+                                 "    font-size: 16pt;"
+                                 "    background-color: #333333;"
+                                 "    border: none;"
+                                 "    padding: 10px 20px;"
+                                 "}"
+                                 "QPushButton:hover {"
+                                 "    background-color: #555555;"
+                                 "}"
+                                 "QPushButton:pressed {"
+                                 "    background-color: #777777;"
+                                 "}");
+
+
+    QHBoxLayout *replayLayout = new QHBoxLayout();
+    replayLayout->addWidget(backButton);
+    replayLayout->addWidget(forwardButton);
+
+    layout = new QVBoxLayout(ui->centralwidget);
+    layout->addLayout(labelsLayout);
+    layout->addWidget(gameWidget);
+    layout->addLayout(replayLayout);
+    layout->setAlignment(Qt::AlignCenter);
+    ui->centralwidget->setLayout(layout);
+}
+
 bool GameController::eventFilter(QObject *obj, QEvent *event) {
     if (event->type() == QEvent::KeyPress) {
         QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
@@ -156,4 +190,17 @@ bool GameController::eventFilter(QObject *obj, QEvent *event) {
         return true;
     }
     return false;
+}
+
+void GameController::onFileLoaded(QString content) {
+    runGame(content);
+}
+
+Game* GameController::getGame() {
+    return game;
+}
+
+void GameController::onGameRestarted(QString content) {
+    endWidget->hide();
+    onFileLoaded(content);
 }

@@ -15,6 +15,8 @@
 #include <QKeyEvent>
 #include <QTimer>
 #include <QLabel>
+#include <QVBoxLayout>
+#include <QPushButton>
 
 class GameWidget;
 class EndWidget;
@@ -44,6 +46,11 @@ public:
      */
     Game* getGame();
 
+    /**
+     * All widgets manager
+     */
+    void initWidgets();
+
     Direction temp_dir;
 public slots:
     /**
@@ -51,11 +58,17 @@ public slots:
      * @param content content of map from text file
      */
     void onFileLoaded(QString content);
+
     /**
      * Run new Game instance when game is restarted
      * @param content content of map from text file
      */
     void onGameRestarted(QString content);
+
+    /**
+     * Replay game
+     */
+    void replayGame();
 private:
     QStatusBar *statusBar;
     QTimer timer;
@@ -64,6 +77,9 @@ private:
     EndWidget *endWidget = nullptr;
     QLabel *stepsLabel;
     QLabel *healthLabel;
+    QPushButton *backButton;
+    QPushButton *forwardButton;
+    QVBoxLayout *layout;
     int number_tries = 1;
     Ui::MainWindow *ui;
 
