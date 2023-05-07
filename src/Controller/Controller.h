@@ -62,10 +62,10 @@ public:
      * @param pacman_x position of pacman in x
      * @param pacman_y position of pacman in y
      * @param ghost number of ghost
-     * @param ghost_x position of ghost in x
-     * @param ghost_y position of ghost in y
+     * @param ghost_x position of ghost in x (from vector)
+     * @param ghost_y position of ghost in y (from vector)
      */
-    void log(int pacman_x, int pacman_y, int ghost, int ghost_x, int ghost_y);
+    void log(int pacman_x, int pacman_y, int ghost, const std::vector<int>& ghost_x, const std::vector<int>& ghost_y);
 
     Direction temp_dir;
 public slots:
@@ -95,22 +95,22 @@ private:
     QTimer timer;
 
     Game *game = nullptr;
-    GameWidget *gameWidget;
-    ReplayWidget *replayWidget;
+    GameWidget *gameWidget = nullptr;
+    ReplayWidget *replayWidget = nullptr;
     EndWidget *endWidget = nullptr;
 
     QLabel *stepsLabel = nullptr;
     QLabel *healthLabel = nullptr;
 
-    QPushButton *backButton;
-    QPushButton *forwardButton;
-    QPushButton *exitButton;
-    QVBoxLayout *layout;
+    QPushButton *backButton = nullptr;
+    QPushButton *forwardButton = nullptr;
+    QPushButton *exitButton = nullptr;
+    QVBoxLayout *layout = nullptr;
 
     QString logFilename;
     QString startMap;
 
-    int line_number = 1;
+    int line_number = 0;
 
     int index = 0;
     int number_tries = 1;

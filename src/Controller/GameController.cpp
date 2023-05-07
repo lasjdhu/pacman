@@ -57,13 +57,19 @@ void GameController::runGame(QString &content) {
         game->player_collision();
         game->ghost_collision();
 
+        std::vector<int> ghost_x_positions;
+        std::vector<int> ghost_y_positions;
+
         for (int i = 0; i < game->get_ghost_count(); ++i) {
-            log(game->pacman->get_position_x(),
-                game->pacman->get_position_y(),
-                i,
-                game->ghosts[i]->get_position_x(),
-                game->ghosts[i]->get_position_y());
+            ghost_x_positions.push_back(game->ghosts[i]->get_position_x());
+            ghost_y_positions.push_back(game->ghosts[i]->get_position_y());
         }
+
+        log(game->pacman->get_position_x(),
+            game->pacman->get_position_y(),
+            game->get_ghost_count(),
+            ghost_x_positions,
+            ghost_y_positions);
 
         gameWidget->updateGameState(game);
         stepsLabel->setText(QString("Steps: %1").arg(game->pacman->get_steps()));
@@ -155,7 +161,7 @@ void GameController::createTmp() {
     logFilename = logDir.filePath("log.txt");
 }
 
-void GameController::log(int pacman_x, int pacman_y, int ghost, int ghost_x, int ghost_y) {
+void GameController::log(int pacman_x, int pacman_y, int ghost, const std::vector<int>& ghost_x, const std::vector<int>& ghost_y) {
     index++;
     QFile file(logFilename);
 
@@ -171,8 +177,14 @@ void GameController::log(int pacman_x, int pacman_y, int ghost, int ghost_x, int
     }
 
     QTextStream stream(&file);
-    QString newString = QString("%1: %2,%3,%4,%5,%6\n").arg(index).arg(pacman_x).arg(pacman_y).arg(ghost).arg(ghost_x).arg(ghost_y);
 
+    QString newString = QString("%1,%2,%3").arg(pacman_x).arg(pacman_y).arg(ghost);
+
+    for (size_t i = 0; i < ghost; i++) {
+        newString += QString(",%1,%2").arg(ghost_x[i]).arg(ghost_y[i]);
+    }
+
+    newString += "\n";
     stream << newString;
 
     file.close();
@@ -289,6 +301,7 @@ void GameController::replay() {
         lines.removeFirst();
     }
 
+    int lineCount = lines.size();
     QString linesJoined = lines.join("\n");
 
     replayWidget = new ReplayWidget(rows, cols, map, linesJoined);
@@ -300,13 +313,21 @@ void GameController::replay() {
     layout->setAlignment(Qt::AlignCenter);
     ui->centralwidget->setLayout(layout);
 
-    connect(forwardButton, &QPushButton::clicked, [this]() mutable {
-        line_number++;
+    replayWidget->setIndex(line_number);
+
+    std::cout << lineCount << std::endl;
+
+    connect(forwardButton, &QPushButton::clicked, [this, lineCount]() mutable {
+        if (line_number < lineCount - 2) {
+            line_number++;
+        }
         replayWidget->setIndex(line_number);
     });
 
     connect(backButton, &QPushButton::clicked, [this]() mutable {
-        line_number--;
+        if (line_number != 0) {
+            line_number--;
+        }
         replayWidget->setIndex(line_number);
     });
 
@@ -319,6 +340,14 @@ void GameController::replay() {
 }
 
 void GameController::onFileLoaded(QString content) {
+    if (exitButton) {
+        exitButton->deleteLater();
+        exitButton = nullptr;
+    }
+    if (exitButton) {
+        exitButton->deleteLater();
+        exitButton = nullptr;
+    }
     if (game != nullptr) {
         game->map->free_map_objects();
         game->free_objects();

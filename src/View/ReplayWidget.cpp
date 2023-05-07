@@ -51,32 +51,41 @@ void ReplayWidget::paintEvent(QPaintEvent* event)
             }
         }
     }
-}
-
-// TODO: FIX int i paramteter
-void ReplayWidget::setIndex(int i) {
-    QPainter painter(this);
-    QStringList lines = linesJoined.split("\n");
-
-    int p_x = lines[i].split(',')[0].toInt();
-    int p_y = lines[i].split(',')[1].toInt();
-    int g = lines[i].split(',')[2].toInt();
-    int g_x = lines[i].split(',')[3].toInt();
-    int g_y = lines[i].split(',')[4].toInt();
 
     QPixmap pacmanPixmap("../src/images/pacman.png");
     QPixmap ghostPixmapBlue("../src/images/ghostBlue.png");
     QPixmap ghostPixmapRed("../src/images/ghostRed.png");
     painter.drawPixmap(p_x * TILE_SIZE, p_y * TILE_SIZE,
                        TILE_SIZE, TILE_SIZE, pacmanPixmap);
-    for (int i = 0; i < g; ++i) {
+    for (int i = 0; i < ghostPositions.size(); ++i) {
+        int ghost_x = ghostPositions[i].x();
+        int ghost_y = ghostPositions[i].y();
+
         if (i % 2 == 0) {
-            painter.drawPixmap(g_x * TILE_SIZE, g_y * TILE_SIZE,
+            painter.drawPixmap(ghost_x * TILE_SIZE, ghost_y * TILE_SIZE,
                                TILE_SIZE, TILE_SIZE, ghostPixmapBlue);
         } else {
-            painter.drawPixmap(g_x * TILE_SIZE, g_y * TILE_SIZE,
+            painter.drawPixmap(ghost_x * TILE_SIZE, ghost_y * TILE_SIZE,
                                TILE_SIZE, TILE_SIZE, ghostPixmapRed);
         }
+    }
+}
+
+void ReplayWidget::setIndex(int i) {
+    QStringList lines = linesJoined.split("\n");
+    p_x = lines[i].split(',')[0].toInt();
+    p_y = lines[i].split(',')[1].toInt();
+    g = lines[i].split(',')[2].toInt();
+
+    int index = 3;
+
+    ghostPositions.clear(); // Clear the previous ghost positions
+
+    for (int cnt = 0; cnt < g; cnt++) {
+        int ghost_x = lines[i].split(',')[index].toInt();
+        int ghost_y = lines[i].split(',')[index + 1].toInt();
+        ghostPositions.append({ghost_x, ghost_y}); // Store the ghost position in the list
+        index += 2;
     }
 
     update();

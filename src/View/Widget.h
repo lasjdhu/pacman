@@ -68,7 +68,11 @@ protected:
 private:
     int rows;
     int cols;
+    int p_x;
+    int p_y;
+    int g;
 
+    QList<QPoint> ghostPositions;
     QString map;
     QString linesJoined;
 };
