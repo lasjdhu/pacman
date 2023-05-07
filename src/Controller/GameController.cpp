@@ -17,6 +17,8 @@ void GameController::runGame(QString &content) {
         delete ui->centralwidget->layout();
     }
 
+    startMap = content;
+
     game = new Game;
     game->init_map();
     game->set_gamestate(GameState::RUNNING);
@@ -38,6 +40,7 @@ void GameController::runGame(QString &content) {
         break;
     }
 
+    createTmp();
     initWidgets();
 
     QObject::disconnect(&timer, &QTimer::timeout, nullptr, nullptr);
@@ -53,6 +56,14 @@ void GameController::runGame(QString &content) {
 
         game->player_collision();
         game->ghost_collision();
+
+        for (int i = 0; i < game->get_ghost_count(); ++i) {
+            log(game->pacman->get_position_x(),
+                game->pacman->get_position_y(),
+                i,
+                game->ghosts[i]->get_position_x(),
+                game->ghosts[i]->get_position_y());
+        }
 
         gameWidget->updateGameState(game);
         stepsLabel->setText(QString("Steps: %1").arg(game->pacman->get_steps()));
@@ -82,6 +93,7 @@ void GameController::runGame(QString &content) {
                     this->number_tries = 1;
                 }
                 layout->addWidget(endWidget);
+                QObject::connect(endWidget, &EndWidget::saveGameplay, this, &GameController::onSaveGameplay);
                 QObject::connect(endWidget, &EndWidget::gameRestarted, this, &GameController::onGameRestarted);
             } else {
                 if (game->get_gamestate() == GameState::OVER) {
@@ -91,6 +103,8 @@ void GameController::runGame(QString &content) {
                     endWidget->updateContent(1, game->pacman->get_steps(), this->number_tries);
                     this->number_tries = 1;
                 }
+                layout->addWidget(endWidget);
+                QObject::connect(endWidget, &EndWidget::saveGameplay, this, &GameController::onSaveGameplay);
             }
 
             endWidget->show();
@@ -105,8 +119,105 @@ void GameController::runGame(QString &content) {
     });
 }
 
-void GameController::replayGame() {
+bool GameController::eventFilter(QObject *obj, QEvent *event) {
+    if (event->type() == QEvent::KeyPress) {
+        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+        switch (keyEvent->key()) {
+        case Qt::Key_Up:
+        case Qt::Key_W:
+            temp_dir = Direction::UP;
+            break;
+        case Qt::Key_Down:
+        case Qt::Key_S:
+            temp_dir = Direction::DOWN;
+            break;
+        case Qt::Key_Left:
+        case Qt::Key_A:
+            temp_dir = Direction::LEFT;
+            break;
+        case Qt::Key_Right:
+        case Qt::Key_D:
+            temp_dir = Direction::RIGHT;
+            break;
+        }
+        return true;
+    }
+    return false;
+}
 
+void GameController::createTmp() {
+    QDir logDir("../src");
+
+    if (!logDir.exists()) {
+        if (!logDir.mkpath("../src")) {
+            statusBar->showMessage("Failed to create tmp for log");
+            return;
+        }
+    }
+
+    logFilename = logDir.filePath("log.txt");
+}
+
+void GameController::log(int pacman_x, int pacman_y, int ghost, int ghost_x, int ghost_y) {
+    index++;
+    QFile file(logFilename);
+
+    if (!file.open(QIODevice::Append | QIODevice::Text)) {
+        statusBar->showMessage("Failed to start log");
+        return;
+    }
+
+    if (index == 1) {
+        file.close();
+        QFile::remove(logFilename);
+        file.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
+    }
+
+    QTextStream stream(&file);
+    QString newString = QString("%1: %2, %3, %4, %5, %6\n").arg(index).arg(pacman_x).arg(pacman_y).arg(ghost).arg(ghost_x).arg(ghost_y);
+
+    stream << newString;
+
+    file.close();
+}
+
+void GameController::onSaveGameplay() {
+    QString filename = QFileDialog::getSaveFileName(qobject_cast<QWidget*>(parent()),
+                                                    "Save File",
+                                                    "../examples/", "Text Files (*.out)");
+    if (filename.isEmpty()) {
+        statusBar->showMessage("No file saved");
+        return;
+    }
+
+    QFile logFile(logFilename);
+    if (logFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QFile newFile(filename);
+        if (newFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            QTextStream in(&logFile);
+            QTextStream out(&newFile);
+            out << startMap;
+            out << in.readAll();
+            newFile.close();
+            logFile.close();
+        }
+    }
+
+    QFile::remove(logFilename);
+    statusBar->showMessage(QString("Gameplay \"%1\" saved").arg(filename));
+}
+
+void GameController::onFileLoaded(QString content) {
+    runGame(content);
+}
+
+void GameController::onGameRestarted(QString content) {
+    endWidget->hide();
+    onFileLoaded(content);
+}
+
+Game* GameController::getGame() {
+    return game;
 }
 
 void GameController::initWidgets() {
@@ -164,43 +275,4 @@ void GameController::initWidgets() {
     layout->addLayout(replayLayout);
     layout->setAlignment(Qt::AlignCenter);
     ui->centralwidget->setLayout(layout);
-}
-
-bool GameController::eventFilter(QObject *obj, QEvent *event) {
-    if (event->type() == QEvent::KeyPress) {
-        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
-        switch (keyEvent->key()) {
-        case Qt::Key_Up:
-        case Qt::Key_W:
-            temp_dir = Direction::UP;
-            break;
-        case Qt::Key_Down:
-        case Qt::Key_S:
-            temp_dir = Direction::DOWN;
-            break;
-        case Qt::Key_Left:
-        case Qt::Key_A:
-            temp_dir = Direction::LEFT;
-            break;
-        case Qt::Key_Right:
-        case Qt::Key_D:
-            temp_dir = Direction::RIGHT;
-            break;
-        }
-        return true;
-    }
-    return false;
-}
-
-void GameController::onFileLoaded(QString content) {
-    runGame(content);
-}
-
-Game* GameController::getGame() {
-    return game;
-}
-
-void GameController::onGameRestarted(QString content) {
-    endWidget->hide();
-    onFileLoaded(content);
 }

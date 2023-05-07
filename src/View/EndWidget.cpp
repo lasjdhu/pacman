@@ -31,6 +31,18 @@ EndWidget::EndWidget(int mode, int steps, int tries, QString content, QWidget *p
         hide();
     });
 
+    saveButton = new QPushButton("Save this gameplay");
+    saveButton->setStyleSheet("QPushButton { color: white; }");
+    layout->addWidget(saveButton);
+
+    labelSaved = new QLabel("Gameplay was saved");
+    labelSaved->setStyleSheet("QLabel { color: white; }");
+
+    QObject::connect(saveButton, &QPushButton::clicked, this, [this]() {
+        emit saveGameplay();
+        layout->addWidget(labelSaved);
+    });
+
     setLayout(layout);
 }
 

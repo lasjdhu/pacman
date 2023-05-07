@@ -77,11 +77,18 @@ signals:
      * @param content content of map from text file
      */
     void gameRestarted(QString content);
+
+    /**
+     * signal from 'Save this gameplay' button
+     */
+    void saveGameplay();
 private:
     QVBoxLayout *layout;
     QLabel *label;
+    QLabel *labelSaved;
     QPushButton *exitButton;
     QPushButton *restartButton;
+    QPushButton *saveButton;
 };
 
 #endif // WIDGET_H

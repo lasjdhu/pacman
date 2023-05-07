@@ -6,6 +6,15 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
+function(make_paths_relative target)
+    get_target_property(target_sources ${target} SOURCES)
+    foreach(source ${target_sources})
+        get_source_file_property(source_location ${source} LOCATION)
+        file(RELATIVE_PATH relative_source_location ${CMAKE_SOURCE_DIR} ${source_location})
+        set_source_files_properties(${source} PROPERTIES LOCATION ${relative_source_location})
+    endforeach()
+endfunction()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -60,29 +69,6 @@ set_target_properties(icp_project PROPERTIES
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
-)
-
-set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
-    "doc/"
-    "cmake_install.cmake"
-    "CMakeCache.txt"
-    "CMakeFiles"
-    "icp_project_autogen"
-    "icp_project"
-    "build-src-Desktop-Debug/"
-    "build-src-Desktop-Profile/"
-    "./src/CMakeLists.txt.user"
-    "xname01-xivanu00.zip"
-)
-
-add_custom_target(pack
-  COMMAND zip -r xkrato67-xivanu00.zip *
-  COMMENT "Making archive..."
-)
-
-add_custom_target(doxygen
-  COMMAND mkdir -p doc && doxygen
-  COMMENT "Documentation is generated in doc/"
 )
 
 install(TARGETS icp_project

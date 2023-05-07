@@ -12,7 +12,7 @@
 #include "../View/ui_mainwindow.h"
 #include <QObject>
 #include <QStatusBar>
-#include <QKeyEvent>
+#include <QtGui/QKeyEvent>
 #include <QTimer>
 #include <QLabel>
 #include <QVBoxLayout>
@@ -51,6 +51,21 @@ public:
      */
     void initWidgets();
 
+    /**
+     * Create tmp file for log and return file
+     */
+    void createTmp();
+
+    /**
+     * Log game events
+     * @param pacman_x position of pacman in x
+     * @param pacman_y position of pacman in y
+     * @param ghost number of ghost
+     * @param ghost_x position of ghost in x
+     * @param ghost_y position of ghost in y
+     */
+    void log(int pacman_x, int pacman_y, int ghost, int ghost_x, int ghost_y);
+
     Direction temp_dir;
 public slots:
     /**
@@ -66,21 +81,30 @@ public slots:
     void onGameRestarted(QString content);
 
     /**
-     * Replay game
+     * Save tmp file with gameplay
      */
-    void replayGame();
+    void onSaveGameplay();
 private:
     QStatusBar *statusBar;
     QTimer timer;
+
     Game *game;
     GameWidget *gameWidget;
     EndWidget *endWidget = nullptr;
+
     QLabel *stepsLabel;
     QLabel *healthLabel;
+
     QPushButton *backButton;
     QPushButton *forwardButton;
     QVBoxLayout *layout;
+
+    QString logFilename;
+    QString startMap;
+
+    int index = 0;
     int number_tries = 1;
+
     Ui::MainWindow *ui;
 
     /**
