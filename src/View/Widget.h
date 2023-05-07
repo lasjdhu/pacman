@@ -69,10 +69,10 @@ private:
     int rows;
     int cols;
 
-    bool key_collected;
-    int p_x;
-    int p_y;
-    int g;
+    bool key_collected = 0;
+    int p_x = -1;
+    int p_y = -1;
+    int g = -1;
 
     QList<QPoint> ghostPositions;
     QString map;

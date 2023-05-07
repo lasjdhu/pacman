@@ -218,6 +218,26 @@ void GameController::onSaveGameplay() {
 }
 
 void GameController::replay() {
+    if (game) {
+        timer.stop();
+
+        if (stepsLabel) {
+            stepsLabel->deleteLater();
+            stepsLabel = nullptr;
+        }
+        if (healthLabel) {
+            healthLabel->deleteLater();
+            healthLabel = nullptr;
+        }
+
+        game->map->free_map_objects();
+        game->free_objects();
+        delete gameWidget;
+        gameWidget = nullptr;
+        delete game;
+        game = nullptr;
+    }
+
     if (ui->centralwidget->layout()) {
         delete ui->centralwidget->layout();
     }
@@ -326,7 +346,8 @@ void GameController::replay() {
     if (dialog.clickedButton() == startButton) {
         replayWidget->setIndex(line_number);
     } else if (dialog.clickedButton() == endButton) {
-        replayWidget->setIndex(lineCount - 2);
+        line_number = lineCount - 2;
+        replayWidget->setIndex(line_number);
     }
 
     connect(forwardButton, &QPushButton::clicked, [this, lineCount]() mutable {

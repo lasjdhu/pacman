@@ -57,8 +57,10 @@ void ReplayWidget::paintEvent(QPaintEvent* event)
     QPixmap pacmanPixmap("../src/images/pacman.png");
     QPixmap ghostPixmapBlue("../src/images/ghostBlue.png");
     QPixmap ghostPixmapRed("../src/images/ghostRed.png");
-    painter.drawPixmap(p_x * TILE_SIZE, p_y * TILE_SIZE,
+    if (p_x != -1) {
+        painter.drawPixmap(p_x * TILE_SIZE, p_y * TILE_SIZE,
                        TILE_SIZE, TILE_SIZE, pacmanPixmap);
+    }
     for (int i = 0; i < ghostPositions.size(); ++i) {
         int ghost_x = ghostPositions[i].x();
         int ghost_y = ghostPositions[i].y();
@@ -82,12 +84,12 @@ void ReplayWidget::setIndex(int i) {
 
     int index = 4;
 
-    ghostPositions.clear(); // Clear the previous ghost positions
+    ghostPositions.clear();
 
     for (int cnt = 0; cnt < g; cnt++) {
         int ghost_x = lines[i].split(',')[index].toInt();
         int ghost_y = lines[i].split(',')[index + 1].toInt();
-        ghostPositions.append({ghost_x, ghost_y}); // Store the ghost position in the list
+        ghostPositions.append({ghost_x, ghost_y});
         index += 2;
     }
 
