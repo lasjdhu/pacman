@@ -13,6 +13,31 @@ GameController::GameController(QStatusBar *statusBar, Ui::MainWindow *ui, QObjec
 }
 
 void GameController::runGame(QString &content) {
+    if (backButton) {
+        delete backButton;
+        backButton = nullptr;
+    }
+
+    if (forwardButton) {
+        delete forwardButton;
+        forwardButton = nullptr;
+    }
+
+    if (exitButton) {
+        delete exitButton;
+        exitButton = nullptr;
+    }
+
+    if (replayLayout) {
+        delete replayLayout;
+        replayLayout = nullptr;
+    }
+
+    if (replayWidget) {
+        delete replayWidget;
+        replayWidget = nullptr;
+    }
+
     if (ui->centralwidget->layout()) {
         delete ui->centralwidget->layout();
     }
@@ -286,7 +311,7 @@ void GameController::replay() {
                                  "}");
 
 
-    QHBoxLayout *replayLayout = new QHBoxLayout();
+    replayLayout = new QHBoxLayout();
     replayLayout->addWidget(backButton);
     replayLayout->addWidget(forwardButton);
 
@@ -373,14 +398,6 @@ void GameController::replay() {
 }
 
 void GameController::onFileLoaded(QString content) {
-    if (exitButton) {
-        exitButton->deleteLater();
-        exitButton = nullptr;
-    }
-    if (exitButton) {
-        exitButton->deleteLater();
-        exitButton = nullptr;
-    }
     if (game != nullptr) {
         game->map->free_map_objects();
         game->free_objects();

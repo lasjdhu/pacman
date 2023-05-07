@@ -17,6 +17,7 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QHBoxLayout>
 
 class GameWidget;
 class ReplayWidget;
@@ -111,6 +112,7 @@ private:
     QPushButton *backButton = nullptr;
     QPushButton *forwardButton = nullptr;
     QPushButton *exitButton = nullptr;
+    QHBoxLayout *replayLayout = nullptr;
     QVBoxLayout *layout = nullptr;
 
     QString logFilename;
