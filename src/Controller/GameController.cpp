@@ -72,9 +72,6 @@ void GameController::runGame(QString &content) {
         if (game->get_gamestate() == GameState::OVER || game->get_gamestate() == GameState::WIN) {
             timer.stop();
 
-            backButton->setVisible(false);
-            forwardButton->setVisible(false);
-
             if (stepsLabel) {
                 stepsLabel->deleteLater();
                 stepsLabel = nullptr;
@@ -174,7 +171,7 @@ void GameController::log(int pacman_x, int pacman_y, int ghost, int ghost_x, int
     }
 
     QTextStream stream(&file);
-    QString newString = QString("%1: %2, %3, %4, %5, %6\n").arg(index).arg(pacman_x).arg(pacman_y).arg(ghost).arg(ghost_x).arg(ghost_y);
+    QString newString = QString("%1: %2,%3,%4,%5,%6\n").arg(index).arg(pacman_x).arg(pacman_y).arg(ghost).arg(ghost_x).arg(ghost_y);
 
     stream << newString;
 
@@ -184,7 +181,7 @@ void GameController::log(int pacman_x, int pacman_y, int ghost, int ghost_x, int
 void GameController::onSaveGameplay() {
     QString filename = QFileDialog::getSaveFileName(qobject_cast<QWidget*>(parent()),
                                                     "Save File",
-                                                    "../examples/", "Text Files (*.out)");
+                                                    "../examples/", "Log Files (*.out)");
     if (filename.isEmpty()) {
         statusBar->showMessage("No file saved");
         return;
@@ -205,6 +202,118 @@ void GameController::onSaveGameplay() {
 
     QFile::remove(logFilename);
     statusBar->showMessage(QString("Gameplay \"%1\" saved").arg(filename));
+}
+
+void GameController::replay() {
+    if (ui->centralwidget->layout()) {
+        delete ui->centralwidget->layout();
+    }
+
+    backButton = new QPushButton("Back", ui->centralwidget);
+    backButton->setStyleSheet("QPushButton {"
+                              "    color: white;"
+                              "    font-size: 16pt;"
+                              "    background-color: #333333;"
+                              "    border: none;"
+                              "    padding: 10px 20px;"
+                              "}"
+                              "QPushButton:hover {"
+                              "    background-color: #555555;"
+                              "}"
+                              "QPushButton:pressed {"
+                              "    background-color: #777777;"
+                              "}");
+    forwardButton = new QPushButton("Forward", ui->centralwidget);
+    forwardButton->setStyleSheet("QPushButton {"
+                                 "    color: white;"
+                                 "    font-size: 16pt;"
+                                 "    background-color: #333333;"
+                                 "    border: none;"
+                                 "    padding: 10px 20px;"
+                                 "}"
+                                 "QPushButton:hover {"
+                                 "    background-color: #555555;"
+                                 "}"
+                                 "QPushButton:pressed {"
+                                 "    background-color: #777777;"
+                                 "}");
+    exitButton = new QPushButton("Exit", ui->centralwidget);
+    exitButton->setStyleSheet("QPushButton {"
+                                 "    color: white;"
+                                 "    font-size: 16pt;"
+                                 "    background-color: #333333;"
+                                 "    border: none;"
+                                 "    padding: 10px 20px;"
+                                 "}"
+                                 "QPushButton:hover {"
+                                 "    background-color: #555555;"
+                                 "}"
+                                 "QPushButton:pressed {"
+                                 "    background-color: #777777;"
+                                 "}");
+
+
+    QHBoxLayout *replayLayout = new QHBoxLayout();
+    replayLayout->addWidget(backButton);
+    replayLayout->addWidget(forwardButton);
+
+    QString filename = QFileDialog::getOpenFileName(qobject_cast<QWidget*>(parent()),
+                                                    "Open File",
+                                                    "../examples/", "Log Files (*.out)");
+    if (filename.isEmpty()) {
+        statusBar->showMessage("No file loaded");
+        return;
+    }
+
+    QFile file(filename);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        statusBar->showMessage("Failed to load file");
+        return;
+    }
+
+    QTextStream in(&file);
+    QString content = in.readAll();
+
+    QStringList lines = content.split('\n');
+    int rows = lines[0].split(' ')[0].toInt();
+    int cols = lines[0].split(' ')[1].toInt();
+
+    QString map;
+    for (int i = 1; i <= rows; i++) {
+        QString line = lines[i];
+        map += line;
+        map += "\n";
+    }
+
+    QString linesJoined = lines.join('\n');
+
+    replayWidget = new ReplayWidget(rows, cols, map, linesJoined);
+
+    layout = new QVBoxLayout(ui->centralwidget);
+    layout->addWidget(replayWidget);
+    layout->addLayout(replayLayout);
+    layout->addWidget(exitButton);
+    layout->setAlignment(Qt::AlignCenter);
+    ui->centralwidget->setLayout(layout);
+
+    int i = 1;
+
+    connect(forwardButton, &QPushButton::clicked, [this, &i]() mutable {
+        i++;
+        replayWidget->setIndex(i);
+    });
+
+    connect(backButton, &QPushButton::clicked, [this, &i]() mutable {
+        i--;
+        replayWidget->setIndex(i);
+    });
+
+    connect(exitButton, &QPushButton::clicked, [this]() {
+        qApp->exit();
+    });
+
+    file.close();
+    statusBar->showMessage(QString("File \"%1\" loaded").arg(filename));
 }
 
 void GameController::onFileLoaded(QString content) {
@@ -235,44 +344,9 @@ void GameController::initWidgets() {
     labelsLayout->addWidget(stepsLabel);
     labelsLayout->addWidget(healthLabel);
 
-    backButton = new QPushButton("Back", ui->centralwidget);
-    backButton->setStyleSheet("QPushButton {"
-                              "    color: white;"
-                              "    font-size: 16pt;"
-                              "    background-color: #333333;"
-                              "    border: none;"
-                              "    padding: 10px 20px;"
-                              "}"
-                              "QPushButton:hover {"
-                              "    background-color: #555555;"
-                              "}"
-                              "QPushButton:pressed {"
-                              "    background-color: #777777;"
-                              "}");
-    forwardButton = new QPushButton("Forward", ui->centralwidget);
-    forwardButton->setStyleSheet("QPushButton {"
-                                 "    color: white;"
-                                 "    font-size: 16pt;"
-                                 "    background-color: #333333;"
-                                 "    border: none;"
-                                 "    padding: 10px 20px;"
-                                 "}"
-                                 "QPushButton:hover {"
-                                 "    background-color: #555555;"
-                                 "}"
-                                 "QPushButton:pressed {"
-                                 "    background-color: #777777;"
-                                 "}");
-
-
-    QHBoxLayout *replayLayout = new QHBoxLayout();
-    replayLayout->addWidget(backButton);
-    replayLayout->addWidget(forwardButton);
-
     layout = new QVBoxLayout(ui->centralwidget);
     layout->addLayout(labelsLayout);
     layout->addWidget(gameWidget);
-    layout->addLayout(replayLayout);
     layout->setAlignment(Qt::AlignCenter);
     ui->centralwidget->setLayout(layout);
 }

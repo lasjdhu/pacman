@@ -28,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionLoad, &QAction::triggered, interface, &InterfaceController::loadFile);
     // Save file
     connect(ui->actionSave, &QAction::triggered, [=]() { interface->saveFile(game->getGame()); });
+    // Load file
+    connect(ui->actionReplay, &QAction::triggered, game, &GameController::replay);
     // Show help
     connect(ui->actionUsage, &QAction::triggered, interface, &InterfaceController::displayHelp);
 }

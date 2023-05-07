@@ -28,6 +28,7 @@ set(PROJECT_SOURCES
     Model/CharacterModel.cpp
     Model/Model.h
     View/GameWidget.cpp
+    View/ReplayWidget.cpp
     View/EndWidget.cpp
     View/Widget.h
     View/mainwindow.cpp

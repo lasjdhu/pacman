@@ -19,6 +19,7 @@
 #include <QPushButton>
 
 class GameWidget;
+class ReplayWidget;
 class EndWidget;
 
 /**
@@ -84,12 +85,18 @@ public slots:
      * Save tmp file with gameplay
      */
     void onSaveGameplay();
+
+    /**
+     * Replay your game
+     */
+    void replay();
 private:
     QStatusBar *statusBar;
     QTimer timer;
 
     Game *game;
     GameWidget *gameWidget;
+    ReplayWidget *replayWidget;
     EndWidget *endWidget = nullptr;
 
     QLabel *stepsLabel;
@@ -97,6 +104,7 @@ private:
 
     QPushButton *backButton;
     QPushButton *forwardButton;
+    QPushButton *exitButton;
     QVBoxLayout *layout;
 
     QString logFilename;

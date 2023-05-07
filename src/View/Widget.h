@@ -28,16 +28,6 @@ public:
      * @param game pointer to an object of Game class
      */
     void updateGameState(Game *game);
-    /**
-     * Update steps
-     * @param steps count of steps
-     */
-    void updateSteps(int steps);
-    /**
-     * Update lives
-     * @param steps count of steps
-     */
-    void updateLives(int health);
 protected:
     /**
      * Paint rectangles and load assets to a widget
@@ -46,6 +36,41 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 private:
     Game *game;
+};
+
+/**
+ * ReplayWidget class
+ */
+class ReplayWidget : public QWidget {
+    Q_OBJECT
+public:
+    /**
+     * ReplayWidget constructor
+     * @param rows
+     * @param cols
+     * @param map game map
+     * @param linesJoined events in time
+     * @param *parent pointer to a parent widget
+     */
+    ReplayWidget(int rows, int cols, QString &map, QString &linesJoined, QWidget *parent = nullptr);
+
+    /**
+     * Set index for line
+     * @param i index of line
+     */
+    void setIndex(int i);
+protected:
+    /**
+     * Paint rectangles and load assets to a widget
+     * @param *event QPaintEvent
+     */
+    void paintEvent(QPaintEvent *event) override;
+private:
+    int rows;
+    int cols;
+
+    QString map;
+    QString linesJoined;
 };
 
 /**
