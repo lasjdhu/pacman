@@ -26,15 +26,14 @@ void ReplayWidget::paintEvent(QPaintEvent* event)
         for (int x = 0; x < cols; x++) {
             QRect rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
             QPixmap pixmap;
+            QChar tile = map[y * cols + x];
 
-            QChar tile = map.at(y * cols + x);
-
-            if (tile != '.') {
+            if (tile != 'X') {
                 pixmap = QPixmap("../src/images/grass.jpg");
                 painter.drawPixmap(rect, pixmap);
             }
 
-            switch (tile.toLatin1()) {
+            switch (tile.unicode()) {
             case 'X':
                 pixmap = QPixmap("../src/images/wall.jpg");
                 painter.drawPixmap(rect, pixmap);
@@ -54,15 +53,16 @@ void ReplayWidget::paintEvent(QPaintEvent* event)
     }
 }
 
+// TODO: FIX int i paramteter
 void ReplayWidget::setIndex(int i) {
     QPainter painter(this);
+    QStringList lines = linesJoined.split("\n");
 
-    QStringList lines = linesJoined.split('\n');
-    int p_x = lines[i].split(',')[1].toInt();
-    int p_y = lines[i].split(',')[2].toInt();
-    int g = lines[i].split(',')[3].toInt();
-    int g_x = lines[i].split(',')[4].toInt();
-    int g_y = lines[i].split(',')[5].toInt();
+    int p_x = lines[i].split(',')[0].toInt();
+    int p_y = lines[i].split(',')[1].toInt();
+    int g = lines[i].split(',')[2].toInt();
+    int g_x = lines[i].split(',')[3].toInt();
+    int g_y = lines[i].split(',')[4].toInt();
 
     QPixmap pacmanPixmap("../src/images/pacman.png");
     QPixmap ghostPixmapBlue("../src/images/ghostBlue.png");

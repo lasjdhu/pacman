@@ -277,15 +277,19 @@ void GameController::replay() {
     QStringList lines = content.split('\n');
     int rows = lines[0].split(' ')[0].toInt();
     int cols = lines[0].split(' ')[1].toInt();
+    lines.removeFirst();
 
-    QString map;
-    for (int i = 1; i <= rows; i++) {
+    QString map = "";
+    for (int i = 0; i < rows; i++) {
         QString line = lines[i];
         map += line;
-        map += "\n";
     }
 
-    QString linesJoined = lines.join('\n');
+    for (int i = 0; i < rows; i++) {
+        lines.removeFirst();
+    }
+
+    QString linesJoined = lines.join("\n");
 
     replayWidget = new ReplayWidget(rows, cols, map, linesJoined);
 
