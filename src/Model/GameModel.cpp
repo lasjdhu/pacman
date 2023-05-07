@@ -102,20 +102,7 @@ void Game::player_collision() {
 
     next_position = this->pacman->get_next_position();
 
-    // Check if next position is out of bounds
-    if (next_position.x < 0 || next_position.x >= this->map_size.width) {
-        return;
-    }
-    if (next_position.y < 0 || next_position.y >= this->map_size.height) {
-        return;
-    }
-
-    // Check if next position is a wall
-    if (this->map->get_layout()[next_position.y][next_position.x] == WALL) {
-        return;
-    }
-
-    // Check collision with ghosts -- probably will rework this later
+    // Check collision with ghosts
     for (int i = 0; i < this->get_ghost_count(); i++) {
         if (this->ghosts[i]->get_position_x() == next_position.x
              && this->ghosts[i]->get_position_y() == next_position.y) {
@@ -130,6 +117,19 @@ void Game::player_collision() {
     // Check pacman health
     if (this->pacman->get_health() <= 0) {
         this->set_gamestate(GameState::OVER);
+    }
+
+    // Check if next position is out of bounds
+    if (next_position.x < 0 || next_position.x >= this->map_size.width) {
+        return;
+    }
+    if (next_position.y < 0 || next_position.y >= this->map_size.height) {
+        return;
+    }
+
+    // Check if next position is a wall
+    if (this->map->get_layout()[next_position.y][next_position.x] == WALL) {
+        return;
     }
 
     bool key_collected = this->map->key->is_collected();
@@ -154,12 +154,10 @@ void Game::player_collision() {
     if (this->contains_key) {
         if (key_collected && target_reached) {
             this->set_gamestate(GameState::WIN);
-            std::cout << "Win" << std::endl;
         }
     } else {
         if (target_reached) {
             this->set_gamestate(GameState::WIN);
-            std::cout << "Win" << std::endl;
         }
     }
 
