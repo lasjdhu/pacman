@@ -43,8 +43,10 @@ void ReplayWidget::paintEvent(QPaintEvent* event)
                 painter.drawPixmap(rect, pixmap);
                 break;
             case 'K':
-                pixmap = QPixmap("../src/images/key.png");
-                painter.drawPixmap(rect, pixmap);
+                if (!key_collected) {
+                    pixmap = QPixmap("../src/images/key.png");
+                    painter.drawPixmap(rect, pixmap);
+                }
                 break;
             default:
                 break;
@@ -73,11 +75,12 @@ void ReplayWidget::paintEvent(QPaintEvent* event)
 
 void ReplayWidget::setIndex(int i) {
     QStringList lines = linesJoined.split("\n");
-    p_x = lines[i].split(',')[0].toInt();
-    p_y = lines[i].split(',')[1].toInt();
-    g = lines[i].split(',')[2].toInt();
+    key_collected = lines[i].split(',')[0].toInt();
+    p_x = lines[i].split(',')[1].toInt();
+    p_y = lines[i].split(',')[2].toInt();
+    g = lines[i].split(',')[3].toInt();
 
-    int index = 3;
+    int index = 4;
 
     ghostPositions.clear(); // Clear the previous ghost positions
 

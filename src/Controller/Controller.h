@@ -59,13 +59,19 @@ public:
 
     /**
      * Log game events
+     * @param key_collected boolean for key
      * @param pacman_x position of pacman in x
      * @param pacman_y position of pacman in y
      * @param ghost number of ghost
      * @param ghost_x position of ghost in x (from vector)
      * @param ghost_y position of ghost in y (from vector)
      */
-    void log(int pacman_x, int pacman_y, int ghost, const std::vector<int>& ghost_x, const std::vector<int>& ghost_y);
+    void log(bool key_collected,
+             int pacman_x,
+             int pacman_y,
+             int ghost,
+             const std::vector<int>& ghost_x,
+             const std::vector<int>& ghost_y);
 
     Direction temp_dir;
 public slots:

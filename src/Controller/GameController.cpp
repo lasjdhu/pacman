@@ -65,7 +65,8 @@ void GameController::runGame(QString &content) {
             ghost_y_positions.push_back(game->ghosts[i]->get_position_y());
         }
 
-        log(game->pacman->get_position_x(),
+        log(game->map->key->is_collected(),
+            game->pacman->get_position_x(),
             game->pacman->get_position_y(),
             game->get_ghost_count(),
             ghost_x_positions,
@@ -161,7 +162,7 @@ void GameController::createTmp() {
     logFilename = logDir.filePath("log.txt");
 }
 
-void GameController::log(int pacman_x, int pacman_y, int ghost, const std::vector<int>& ghost_x, const std::vector<int>& ghost_y) {
+void GameController::log(bool key_collected, int pacman_x, int pacman_y, int ghost, const std::vector<int>& ghost_x, const std::vector<int>& ghost_y) {
     index++;
     QFile file(logFilename);
 
@@ -178,7 +179,7 @@ void GameController::log(int pacman_x, int pacman_y, int ghost, const std::vecto
 
     QTextStream stream(&file);
 
-    QString newString = QString("%1,%2,%3").arg(pacman_x).arg(pacman_y).arg(ghost);
+    QString newString = QString("%1,%2,%3,%4").arg(key_collected).arg(pacman_x).arg(pacman_y).arg(ghost);
 
     for (size_t i = 0; i < ghost; i++) {
         newString += QString(",%1,%2").arg(ghost_x[i]).arg(ghost_y[i]);
@@ -313,9 +314,20 @@ void GameController::replay() {
     layout->setAlignment(Qt::AlignCenter);
     ui->centralwidget->setLayout(layout);
 
-    replayWidget->setIndex(line_number);
+    QMessageBox dialog;
+    dialog.setWindowTitle("Replay Options");
+    dialog.setText("Do you want to watch replay from start or end?");
 
-    std::cout << lineCount << std::endl;
+    QAbstractButton* startButton = dialog.addButton("Start", QMessageBox::YesRole);
+    QAbstractButton* endButton = dialog.addButton("End", QMessageBox::NoRole);
+
+    dialog.exec();
+
+    if (dialog.clickedButton() == startButton) {
+        replayWidget->setIndex(line_number);
+    } else if (dialog.clickedButton() == endButton) {
+        replayWidget->setIndex(lineCount - 2);
+    }
 
     connect(forwardButton, &QPushButton::clicked, [this, lineCount]() mutable {
         if (line_number < lineCount - 2) {

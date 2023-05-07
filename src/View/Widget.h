@@ -68,6 +68,8 @@ protected:
 private:
     int rows;
     int cols;
+
+    bool key_collected;
     int p_x;
     int p_y;
     int g;
