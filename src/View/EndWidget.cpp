@@ -1,3 +1,9 @@
+/**
+ * Game Over or Win screen as VIEW
+ * @file EndWidget.cpp
+ * @authors Jakub Kratochvil (xkrato67), Dmitrii Ivanushkin (xivanu00)
+ */
+
 #include "Widget.h"
 
 EndWidget::EndWidget(int mode, int steps, int tries, QString content, QWidget *parent) :

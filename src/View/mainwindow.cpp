@@ -1,7 +1,7 @@
 /**
  * Main window create and delete; Initialization of connects, ui and controllers as VIEW
  * @file mainwindow.cpp
- * @authors Name Surname(xlogin00), Dmitrii Ivanushkin (xivanu00)
+ * @authors Jakub Kratochvil (xkrato67), Dmitrii Ivanushkin (xivanu00)
  */
 
 #include "mainwindow.h"

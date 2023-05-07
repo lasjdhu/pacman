@@ -1,7 +1,7 @@
 /**
  * Widget header file
  * @file GameWidget.h
- * @authors Name Surname(xlogin00), Dmitrii Ivanushkin (xivanu00)
+ * @authors Jakub Kratochvil (xkrato67), Dmitrii Ivanushkin (xivanu00)
  */
 
 #ifndef GAMEWIDGET_H

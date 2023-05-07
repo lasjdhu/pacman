@@ -1,7 +1,7 @@
 /**
  * Painting and updating Game events on the screen as VIEW
  * @file GameWidget.cpp
- * @authors Name Surname(xlogin00), Dmitrii Ivanushkin (xivanu00)
+ * @authors Jakub Kratochvil (xkrato67), Dmitrii Ivanushkin (xivanu00)
  */
 
 #include "Widget.h"

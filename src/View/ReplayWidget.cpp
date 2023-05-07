@@ -1,7 +1,7 @@
 /**
  * Painting and updating Game events from Replay as VIEW
  * @file ReplayWidget.cpp
- * @authors Name Surname(xlogin00), Dmitrii Ivanushkin (xivanu00)
+ * @authors Jakub Kratochvil (xkrato67), Dmitrii Ivanushkin (xivanu00)
  */
 
 #include "Widget.h"
