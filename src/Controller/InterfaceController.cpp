@@ -111,7 +111,15 @@ void InterfaceController::saveFile(Game *game) {
 }
 
 void InterfaceController::displayHelp() {
-    QString message = "Help is here";
+    QString message = "Pac-Man Game\
+                       \
+                       Your goal is to take a key from the exit point\
+                       and find it untill ghosts can find you\
+                       \
+                       You can move Pac-Man using WASD\
+                       To Load map in text format click 'Load' button\
+                       To Save current game state to load and play it later click 'Save' button\
+                       After the game you can save your gameplay and then watch it by clicking 'Replay' button";
     QMessageBox::information(qobject_cast<QWidget*>(parent()), "Help", message);
     statusBar->showMessage("Help is shown");
 }

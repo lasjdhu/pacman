@@ -28,7 +28,7 @@ void Game::init_map() {
 
 int Game::parse_map(QString &content) {
     std::stringstream ss(content.toStdString());
-    ss >> this->map_size.width >> this->map_size.height;
+    ss >> this->map_size.height >> this->map_size.width;
 
     std::string map_layout;
     int num_startpos = 0; int num_targetpos = 0; int num_keys = 0;

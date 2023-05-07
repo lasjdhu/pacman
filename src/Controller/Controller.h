@@ -94,13 +94,13 @@ private:
     QStatusBar *statusBar;
     QTimer timer;
 
-    Game *game;
+    Game *game = nullptr;
     GameWidget *gameWidget;
     ReplayWidget *replayWidget;
     EndWidget *endWidget = nullptr;
 
-    QLabel *stepsLabel;
-    QLabel *healthLabel;
+    QLabel *stepsLabel = nullptr;
+    QLabel *healthLabel = nullptr;
 
     QPushButton *backButton;
     QPushButton *forwardButton;
@@ -109,6 +109,8 @@ private:
 
     QString logFilename;
     QString startMap;
+
+    int line_number = 1;
 
     int index = 0;
     int number_tries = 1;

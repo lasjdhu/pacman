@@ -300,16 +300,14 @@ void GameController::replay() {
     layout->setAlignment(Qt::AlignCenter);
     ui->centralwidget->setLayout(layout);
 
-    int i = 1;
-
-    connect(forwardButton, &QPushButton::clicked, [this, &i]() mutable {
-        i++;
-        replayWidget->setIndex(i);
+    connect(forwardButton, &QPushButton::clicked, [this]() mutable {
+        line_number++;
+        replayWidget->setIndex(line_number);
     });
 
-    connect(backButton, &QPushButton::clicked, [this, &i]() mutable {
-        i--;
-        replayWidget->setIndex(i);
+    connect(backButton, &QPushButton::clicked, [this]() mutable {
+        line_number--;
+        replayWidget->setIndex(line_number);
     });
 
     connect(exitButton, &QPushButton::clicked, [this]() {
@@ -321,6 +319,22 @@ void GameController::replay() {
 }
 
 void GameController::onFileLoaded(QString content) {
+    if (game != nullptr) {
+        game->map->free_map_objects();
+        game->free_objects();
+        delete gameWidget;
+        gameWidget = nullptr;
+        delete game;
+        game = nullptr;
+    }
+    if (stepsLabel != nullptr) {
+        stepsLabel->deleteLater();
+        stepsLabel = nullptr;
+    }
+    if (healthLabel != nullptr) {
+        healthLabel->deleteLater();
+        healthLabel = nullptr;
+    }
     runGame(content);
 }
 
