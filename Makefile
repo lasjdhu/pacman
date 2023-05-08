@@ -12,4 +12,4 @@ pack:
 	zip -r xkrato67-xivanu00.zip *
 
 clean:
-	rm -rf doc/ build/ xkrato67-xivanu00.zip
+	rm -rf doc/ build/ xkrato67-xivanu00.zip src/log.txt
